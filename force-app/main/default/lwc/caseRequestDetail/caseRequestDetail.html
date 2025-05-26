@@ -1,0 +1,73 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:entity_milestone" alternative-text="Case SLA" title="Case SLA"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>SLA deadline regressive</span>
+                    </h2>
+                </div>
+                <template if:true={showReopenButton}>
+                    <div class="slds-no-flex">
+                        <button class="slds-button slds-button_neutral" onclick={reopenCase}>Reopen Case</button>
+                    </div>
+                </template>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_2-of-3">
+                    <p><b>Resolution Time</b></p>
+                    <i>{formattedTime}</i>           
+                    <template if:true={slaStatus}>
+                        <p><b>Status</b></p>
+                        <i>{slaStatus}</i>
+                    </template>  
+                    <template if:true={showInProgressButton}>
+                        <div class="slds-no-flex">
+                            <button class="slds-button" onclick={handleClickInProgressCase}>Mark In Progress</button>
+                        </div>
+                    </template>           
+                    <template if:true={showCompleteButton}>
+                        <div class="slds-no-flex">
+                            <button class="slds-button" onclick={handleClickCompleteCase}>Mark Completed</button>
+                        </div>
+                    </template>
+                </div>                                
+                <div class="slds-col slds-size_1-of-3">
+                    <template if:true={showCircle}>
+                        <div class="circle-container">
+                            <svg class="progress-ring" width="120" height="120">
+                                <circle class="ring-bg" r="48" cx="60" cy="60" />
+                                <circle class={ringFillClass} r="48" cx="60" cy="60" stroke-dasharray="339.29" stroke-dashoffset={progressOffset} />
+                            </svg>
+                            <template if:true={slaMet}>
+                                <div class="center-label">
+                                    <div>{formattedTimeCircle}</div>                               
+                                    <div class="label-sub">remaining</div>
+                                </div>
+                            </template>
+                            <template if:false={slaMet}>
+                                <div class="center-label">
+                                    <div class="text-sla-met">{formattedTimeCircle}</div> 
+                                </div>
+                            </template>
+                        </div>                    
+                    </template>
+                </div>                
+            </div>
+        </div>
+    </article>
+    
+    <template if:true={showModal}>
+        <c-case-close-modal
+            resolution-notes={resolutionInputValue}
+            onnotechange={handleNoteChange}
+            onsave={closeCase}
+            oncancel={cancelCloseCase}>
+        </c-case-close-modal>
+    </template>
+</template>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <isExposed>true</isExposed>
+    <lightningMessageFields>
+        <fieldName>status</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <fieldName>resolutionNotes</fieldName>
+    </lightningMessageFields>
+    <masterLabel>Case Channel</masterLabel>
+</LightningMessageChannel>

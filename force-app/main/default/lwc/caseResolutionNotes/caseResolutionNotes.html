@@ -1,0 +1,12 @@
+<template>
+    <lightning-card title="Resolution Notes">
+        <div class="slds-p-around_small">
+            <p>{visibleText}</p>
+            <template if:true={isTruncated}>
+                <a href="javascript:void(0);" onclick={toggleText}>
+                    {showMoreButton}
+                </a>
+            </template>
+        </div>
+    </lightning-card>
+</template>
