@@ -108,6 +108,11 @@ Foram criadas 2 condições pois, apenas um if-else após a adição futura de o
 
 ![image](https://github.com/user-attachments/assets/5acc893a-75b5-4d91-b8dd-69e9db5451c7)
 
+#### Assignment Case to Queue (Auto Launched Flow)
+Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow pega o recordId do Case_Request__c e define o Owner desse case a uma fila.
+
+Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.
+
 #### Require ResolutionNotes Before Close (Validation Rule)
 Impede que o Case Request seja fechado sem antes ter preenchido o campo Resolution_Notes__c do objeto.
 
@@ -126,6 +131,14 @@ AND(
   NOT($Permission.canReopenCaseRequest)
 )
 ```
+
+### 🎨 Lightning Web Components ( LWC )
+- 🪟 `caseCloseModal`: modal customizado para encerramento de casos com regras de validação.
+Modal com um campo para inserir o resolution notes e encerrar o caso.
+- 🧾 `caseRequestDetail`: SLA_Deadline__c em contagem regressiva dinâmica e botões para reabrir, avançar para In Progress e fechar caso. 
+![image](https://github.com/user-attachments/assets/432ef146-dc37-4e4d-b2cc-b368531ccbe2)
+
+
 
 
 
