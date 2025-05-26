@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_ResolutionNotes_Before_Close</fullName>
+    <active>true</active>
+    <description>Exige que o campo Resolution Notes esteja preenchido antes de fechar o case.</description>
+    <errorConditionFormula>AND (
+ ISPICKVAL( Status__c , &apos;Closed&apos;),
+ ISBLANK(  Resolution_Notes__c ) 
+)</errorConditionFormula>
+    <errorMessage>Por favor, preencha o campo &apos;Resolution Notes&apos; antes de fechar o caso.</errorMessage>
+</ValidationRule>

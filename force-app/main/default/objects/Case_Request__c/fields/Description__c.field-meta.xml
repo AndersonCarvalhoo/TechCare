@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Description__c</fullName>
+    <description>Este é o campo de descrição do nosso case request. Nesse campo de descrição deve ser descrito todas as informações necessárias referente a solicitação para o suporte.</description>
+    <inlineHelpText>Descreva com mais detalhes sua solicitação.</inlineHelpText>
+    <label>Description</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subject__c</fullName>
+    <description>Esse campo é referente ao assunto do case request, deve ser salvo nele um texto referente ao assunto da solicitação ao suporte.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Informe qual é o assunto da sua solicitação.</inlineHelpText>
+    <label>Subject</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

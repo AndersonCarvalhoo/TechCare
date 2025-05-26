@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assign_to_Queue</fullName>
+    <availability>online</availability>
+    <description>Atribui o caso para a fila específica, baseada no record type do registro.</description>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <height>600</height>
+    <linkType>url</linkType>
+    <masterLabel>Assign to Queue</masterLabel>
+    <openType>noSidebar</openType>
+    <protected>false</protected>
+    <url>/flow/Assignment_Case_to_Queue?recordId={!Case_Request__c.Id}</url>
+</WebLink>
