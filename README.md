@@ -138,6 +138,36 @@ Modal com um campo para inserir o resolution notes e encerrar o caso.
 - 🧾 `caseRequestDetail`: SLA_Deadline__c em contagem regressiva dinâmica e botões para reabrir, avançar para In Progress e fechar caso. 
 ![image](https://github.com/user-attachments/assets/432ef146-dc37-4e4d-b2cc-b368531ccbe2)
 
+### Apex classes
+#### Classe `CaseRequestDetailController.cls`
+Esta é a classe que interage com as requisições do componente `caseRequestDetail`, enviando dados específicos a partir de chamadas no LWC.
+##### Método `getSLAInfo(Id caseRequestId)`
+- 🧩 **Função**: Consulta os dados de Case_Request__c pelo Id retorna campos essênciais para criar a regra do timer regressivo do SLA.
+- 🔁 **Chamado por**: Pelo @wire do LWC caseRequestDetail passando o recordId como parâmetro`.
+##### Método `reopenCaseRequest(Id caseRequestId)`
+- 🧩 **Função**: Reabre o Case Request alterando o Status__c para In progress.
+- 🔁 **Chamado por**: Pelo @wire do LWC caseRequestDetail passando o recordId como parâmetro`.
+- ✅ **Validações**:
+  - Verifica se o usuário tem o Permission Set Support_Premium. Apenas usuários com o Permission Set Support Premium podem reabrir casos.
+##### Método `SupportPremiumUser(String permissionSetName)`
+- 🧩 **Função**: Consulta se o usuário atual possui a Permission set atribuída através de uma query em PermissionSetAssignment passando o Id do user e a Permission Set no WHERE.
+- 🔁 **Chamado por**: Pela própria classe através dos métodos `getSLAInfo(Id caseRequestId)` e `reopenCaseRequest(Id caseRequestId)` `.
+
+### Apex triggers
+#### Case Request Trigger
+Cria um registro de Case History vinculado ao Case Request. 
+
+Sempre que o Objeto alterar o Status para Closed a trigger irá criar um registro de Case History, irá popular o Time_Closed__c com a DateTime Now e irá verificar se o SLA foi cumprido. Caso o SLA seja cumprido o campo SLA_Met__c será true, ao contrario será false.
+
+#### 🧩 Arquitetura de Trigger - Case Request
+```bash
+📌 CaseRequestTrigger
+│
+└── 🧱 CaseRequestHandler
+│
+└── 🧠 CaseRequestService
+```
+
 
 
 
