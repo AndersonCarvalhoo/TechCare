@@ -113,6 +113,8 @@ Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow peg
 
 Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.
 
+---
+
 #### Require ResolutionNotes Before Close (Validation Rule)
 Impede que o Case Request seja fechado sem antes ter preenchido o campo Resolution_Notes__c do objeto.
 
@@ -122,6 +124,9 @@ AND (
   ISBLANK( Resolution_Notes__c )
 )
 ```
+
+---
+
 #### Case Reopen Permission Validation (Validation Rule)
 Verifica se o usuário tem permissão para reabrir um caso.
 ```bash
@@ -132,46 +137,54 @@ AND(
 )
 ```
 
+---
+
 ### 🎨 Lightning Web Components ( LWC )
 - 🪟 `caseCloseModal`: modal customizado para encerramento de casos com regras de validação.
 Modal com um campo para inserir o resolution notes e encerrar o caso.
 - 🧾 `caseRequestDetail`: SLA_Deadline__c em contagem regressiva dinâmica e botões para reabrir, avançar para In Progress e fechar caso. 
 ![image](https://github.com/user-attachments/assets/432ef146-dc37-4e4d-b2cc-b368531ccbe2)
 
-### Apex classes
-#### Classe `CaseRequestDetailController.cls`
-Esta é a classe que interage com as requisições do componente `caseRequestDetail`, enviando dados específicos a partir de chamadas no LWC.
-##### Método `getSLAInfo(Id caseRequestId)`
-- 🧩 **Função**: Consulta os dados de Case_Request__c pelo Id retorna campos essênciais para criar a regra do timer regressivo do SLA.
-- 🔁 **Chamado por**: Pelo @wire do LWC caseRequestDetail passando o recordId como parâmetro`.
-##### Método `reopenCaseRequest(Id caseRequestId)`
-- 🧩 **Função**: Reabre o Case Request alterando o Status__c para In progress.
-- 🔁 **Chamado por**: Pelo @wire do LWC caseRequestDetail passando o recordId como parâmetro`.
-- ✅ **Validações**:
-  - Verifica se o usuário tem o Permission Set Support_Premium. Apenas usuários com o Permission Set Support Premium podem reabrir casos.
-##### Método `SupportPremiumUser(String permissionSetName)`
-- 🧩 **Função**: Consulta se o usuário atual possui a Permission set atribuída através de uma query no PermissionSetAssignment, passando o Id do user e a Permission Set no WHERE.
-- 🔁 **Chamado por**: Pela própria classe através dos métodos `getSLAInfo(Id caseRequestId)` e `reopenCaseRequest(Id caseRequestId)` `.
+---
 
-#### Classe `CaseRequestRestResource.cls`
+### 🧠 Apex classes  
+#### 📦 Classe `CaseRequestDetailController.cls`  
+Esta é a classe que interage com as requisições do componente `caseRequestDetail`, enviando dados específicos a partir de chamadas no LWC.  
 
-Classe responsável por expor um endpoint REST que retorna informações sobre um Case Request específico, dado o seu `Id`.
+##### 🧩 Método `getSLAInfo(Id caseRequestId)`  
+- 🧩 **Função**: Consulta os dados de Case_Request__c pelo Id retorna campos essênciais para criar a regra do timer regressivo do SLA.  
+- 🔁 **Chamado por**: Pelo @wire do LWC caseRequestDetail passando o recordId como parâmetro`.  
 
-##### Método `getCaseRequestInfo()`
-- 🧩 **Função**: Expõe um endpoint `GET` no caminho `/services/apexrest/CaseRequest/{id}` que retorna o `Status` e o `SLA_Met` do registro de `Case_Request__c`.
-- 🔁 **Chamado por**: Requisições externas via REST API (ex.: Postman, sistemas externos, integrações).
-- ✅ **Validações e comportamentos**:
-  - Verifica se o `caseId` está presente e é válido (15 caracteres ou mais).
-  - Consulta o `Status__c` e o primeiro `Case_History__c` relacionado, retornando seu campo `SLA_Met__c`.
-  - Retorna erro `400` se o `Id` estiver malformado.
-  - Retorna erro `404` se o `Case_Request__c` não for encontrado.
-  - 📄 **Resposta esperada**
+##### 🧩 Método `reopenCaseRequest(Id caseRequestId)`  
+- 🧩 **Função**: Reabre o Case Request alterando o Status__c para In progress.  
+- 🔁 **Chamado por**: Pelo @wire do LWC caseRequestDetail passando o recordId como parâmetro`.  
+- ✅ **Validações**:  
+  - 🛡️ Verifica se o usuário tem o Permission Set Support_Premium. Apenas usuários com o Permission Set Support Premium podem reabrir casos.  
+
+##### 🧩 Método `SupportPremiumUser(String permissionSetName)`  
+- 🧩 **Função**: Consulta se o usuário atual possui a Permission set atribuída através de uma query no PermissionSetAssignment, passando o Id do user e a Permission Set no WHERE.  
+- 🔁 **Chamado por**: Pela própria classe através dos métodos getSLAInfo(Id caseRequestId) e reopenCaseRequest(Id caseRequestId) `.  
+
+---
+
+#### 🌐 Classe `CaseRequestRestResource.cls`  
+Classe responsável por expor um endpoint REST que retorna informações sobre um Case Request específico, dado o seu `Id`.  
+
+##### 🧩 Método `getCaseRequestInfo()`  
+- 🧩 **Função**: Expõe um endpoint `GET` no caminho `/services/apexrest/CaseRequest/{id}` que retorna o `Status` e o `SLA_Met` do registro de `Case_Request__c`.  
+- 🔁 **Chamado por**: Requisições externas via REST API (ex.: Postman, sistemas externos, integrações).  
+- ✅ **Validações e comportamentos**:  
+  - ❓ Verifica se o `caseId` está presente e é válido (15 caracteres ou mais).  
+  - 🔎 Consulta o `Status__c` e o primeiro `Case_History__c` relacionado, retornando seu campo `SLA_Met__c`.  
+  - 🔴 Retorna erro `400` se o `Id` estiver malformado.  
+  - 🟠 Retorna erro `404` se o `Case_Request__c` não for encontrado.  
+  - 📄 **Resposta esperada**  
     ```json
     {
     "Status": "In Progress",
     "Sla_Met": true
     }
-
+    ```
 
 ### Apex triggers
 #### Case Request Trigger
