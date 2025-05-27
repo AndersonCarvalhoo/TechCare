@@ -187,21 +187,60 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
     ```
 
 ### ⚡ Apex triggers 
-#### 📝 Case Request Trigger 
+#### 📝 CaseRequestTrigger 
 Cria um registro de Case History vinculado ao Case Request. 
-
-Sempre que o Objeto alterar o Status para Closed a trigger irá criar um registro de Case History, irá popular o Time_Closed__c com a DateTime Now e irá verificar se o SLA foi cumprido. Caso o SLA seja cumprido o campo SLA_Met__c será true, ao contrario será false.
+- 🧩 **Função**: Sempre que o Objeto alterar o Status para Closed a trigger irá criar um registro de Case History, irá popular o `Time_Closed__c` com a DateTime Now e irá verificar se o SLA foi cumprido. Caso o SLA seja cumprido o campo `SLA_Met__c` será true, ao contrario será false.`.  
+- 🔁 **Acionado**: O Trigger é acionado sempre que um objeto é alterado, o Helper verifica se o objeto teve o Campo `Status__c` mudado para 'Closed'.  
 
 #### 🧩 Arquitetura de Trigger - Case Request
 ```bash
-📌 CaseRequestTrigger
+📌 CaseRequestTrigger                 # Trigger Verificando AFTER_UPDATE e chamando `CaseRequestHandler.afterUpdate(oldCases, newCases)`
 │
-└── 🧱 CaseRequestHandler
+└── 🧱 CaseRequestHandler             # Handler pegando os registros alterados, verificando se o status foi fechado, mandando para o Service criar o Case_History__c e inserindo no BD
 │
-└── 🧠 CaseRequestService
+└── 🧠 CaseRequestService             # Service que verifica se o `SLA_Deadline` foi cumprido e cria o objeto `Case_History__c` populando os campos de forma dinâmica
 ```
 
+## 🚀 Instruções de Instalação e Deploy
 
+### 📦 Pré-requisitos
+
+- Salesforce CLI (SFDX)
+- VS Code com Salesforce Extension Pack
+- Conta DevHub, Scratch Org ou Sandbox
+- Git instalado
+- Acesso ao repositório do projeto
+
+---
+
+### 🔁 1. Clone o Repositório
+
+```bash
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd seu-repositorio
+```
+### 🔐 2. Login na Org Salesforce
+#### DevHub:
+```bash
+  sfdx auth:web:login --setalias DevHub --setdefaultdevhubusername
+```
+### 📤 3. Deploy do Projeto
+```bash
+sfdx force:source:deploy -p force-app/main/default -u TechCareSandbox
+```
+### 🌐 4. Abrir a Org e App Lightning
+```bash
+sfdx force:org:open
+```
+### ✅ 7. Rodar Testes Apex
+```bash
+sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
+```
+### ⚙️ 8. Pós-Deploy Manual
+- Criar filas: Support Premium Queue e Support Standard Queue
+- Configurar Record Types com layouts e lightning pages
+- Atribuir usuários ao perfil Support
+- Atribuir Permission Set Support_Standard ou Support_Premium
 
 
 
