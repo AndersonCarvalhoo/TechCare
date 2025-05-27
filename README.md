@@ -1,7 +1,7 @@
 # TechCare Support in Salesforce
 ## Informações do Responsável
 - Nome: Anderson Carvalho
-- Perfil Escolhido: Desenvolvedor com conhecimentos em Admin
+- Perfil Escolhido: **Desenvolvedor** com conhecimentos em Admin
 
 ## TechCare Support Project
 TechCare support é uma solução para criação e administração de casos de suporte. A partir do app TechCare Support o usuário do suporte pode registrar casos, pegar casos da fila baseado na prioridade, verificar dashboards essenciais na Home do App, verificar SLA de forma rápida, visual e intuitiva dentre outras vantagens. O foco do TechCare Support é aumentar a produtividade e organização da equipe de suporte.
@@ -150,8 +150,28 @@ Esta é a classe que interage com as requisições do componente `caseRequestDet
 - ✅ **Validações**:
   - Verifica se o usuário tem o Permission Set Support_Premium. Apenas usuários com o Permission Set Support Premium podem reabrir casos.
 ##### Método `SupportPremiumUser(String permissionSetName)`
-- 🧩 **Função**: Consulta se o usuário atual possui a Permission set atribuída através de uma query em PermissionSetAssignment passando o Id do user e a Permission Set no WHERE.
+- 🧩 **Função**: Consulta se o usuário atual possui a Permission set atribuída através de uma query no PermissionSetAssignment, passando o Id do user e a Permission Set no WHERE.
 - 🔁 **Chamado por**: Pela própria classe através dos métodos `getSLAInfo(Id caseRequestId)` e `reopenCaseRequest(Id caseRequestId)` `.
+
+#### Classe `CaseRequestRestResource.cls`
+
+Classe responsável por expor um endpoint REST que retorna informações sobre um Case Request específico, dado o seu `Id`.
+
+##### Método `getCaseRequestInfo()`
+- 🧩 **Função**: Expõe um endpoint `GET` no caminho `/services/apexrest/CaseRequest/{id}` que retorna o `Status` e o `SLA_Met` do registro de `Case_Request__c`.
+- 🔁 **Chamado por**: Requisições externas via REST API (ex.: Postman, sistemas externos, integrações).
+- ✅ **Validações e comportamentos**:
+  - Verifica se o `caseId` está presente e é válido (15 caracteres ou mais).
+  - Consulta o `Status__c` e o primeiro `Case_History__c` relacionado, retornando seu campo `SLA_Met__c`.
+  - Retorna erro `400` se o `Id` estiver malformado.
+  - Retorna erro `404` se o `Case_Request__c` não for encontrado.
+  - 📄 **Resposta esperada**
+    ```json
+    {
+    "Status": "In Progress",
+    "Sla_Met": true
+    }
+
 
 ### Apex triggers
 #### Case Request Trigger
