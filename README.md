@@ -98,25 +98,25 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - No Lightning Record Page do Support Premium o campo SLA_Deadline__c só é exibido se o priority for diferente de 'Low'
 - Para cada Record Type foi criado um layout e posicionamento diferente.
 
-### Validações e Automações
-#### Set SLA Deadline By RecordType (Record Triggered Flow)
-Atribui o valor do SLA_Deadline__c baseado no RecordType do objeto. 
+### ⚙️ Validações e Automações  
+#### ⏰ Set SLA Deadline By RecordType (Record Triggered Flow)  
+Atribui o valor do SLA_Deadline__c baseado no RecordType do objeto.   
 
-Caso o registro seja do tipo Support Premium o flow define o SLA_Deadline__c como DateTime atual + 24h. Support Standard define o SLA_Deadline__c como DateTime atual + 8h.
+Caso o registro seja do tipo Support Premium o flow define o SLA_Deadline__c como DateTime atual + 24h. Support Standard define o SLA_Deadline__c como DateTime atual + 8h.  
 
-Foram criadas 2 condições pois, apenas um if-else após a adição futura de outro RecordType no Case_Request__c o flow iria quebrar, pois, o else iria para qualquer RecordType. Portanto, foram criados três caminhos, Support Premium, Standard e Default Outcome (Vazio).
+Foram criadas 2 condições pois, apenas um if-else após a adição futura de outro RecordType no Case_Request__c o flow iria quebrar, pois, o else iria para qualquer RecordType. Portanto, foram criados três caminhos, Support Premium, Standard e Default Outcome (Vazio).  
 
-![image](https://github.com/user-attachments/assets/5acc893a-75b5-4d91-b8dd-69e9db5451c7)
+![image](https://github.com/user-attachments/assets/5acc893a-75b5-4d91-b8dd-69e9db5451c7)  
 
-#### Assignment Case to Queue (Auto Launched Flow)
-Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow pega o recordId do Case_Request__c e define o Owner desse case a uma fila.
+#### 📥 Assignment Case to Queue (Auto Launched Flow)  
+Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow pega o recordId do Case_Request__c e define o Owner desse case a uma fila.  
 
-Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.
+Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.  
 
----
+---  
 
-#### Require ResolutionNotes Before Close (Validation Rule)
-Impede que o Case Request seja fechado sem antes ter preenchido o campo Resolution_Notes__c do objeto.
+#### 🚫 Require ResolutionNotes Before Close (Validation Rule)  
+Impede que o Case Request seja fechado sem antes ter preenchido o campo Resolution_Notes__c do objeto.  
 
 ```bash
 AND (
@@ -127,7 +127,7 @@ AND (
 
 ---
 
-#### Case Reopen Permission Validation (Validation Rule)
+#### 🔐 Case Reopen Permission Validation (Validation Rule)
 Verifica se o usuário tem permissão para reabrir um caso.
 ```bash
 AND(
@@ -175,7 +175,7 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
 - 🔁 **Chamado por**: Requisições externas via REST API (ex.: Postman, sistemas externos, integrações).  
 - ✅ **Validações e comportamentos**:  
   - ❓ Verifica se o `caseId` está presente e é válido (15 caracteres ou mais).  
-  - 🔎 Consulta o `Status__c` e o primeiro `Case_History__c` relacionado, retornando seu campo `SLA_Met__c`.  
+  - 🔎 Consulta o `Status__c` e o último `Case_History__c` relacionado, retornando seu campo `SLA_Met__c`.  
   - 🔴 Retorna erro `400` se o `Id` estiver malformado.  
   - 🟠 Retorna erro `404` se o `Case_Request__c` não for encontrado.  
   - 📄 **Resposta esperada**  
@@ -186,8 +186,8 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
     }
     ```
 
-### Apex triggers
-#### Case Request Trigger
+### ⚡ Apex triggers 
+#### 📝 Case Request Trigger 
 Cria um registro de Case History vinculado ao Case Request. 
 
 Sempre que o Objeto alterar o Status para Closed a trigger irá criar um registro de Case History, irá popular o Time_Closed__c com a DateTime Now e irá verificar se o SLA foi cumprido. Caso o SLA seja cumprido o campo SLA_Met__c será true, ao contrario será false.
