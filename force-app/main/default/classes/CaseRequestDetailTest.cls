@@ -36,6 +36,15 @@ public class CaseRequestDetailTest {
         );
         insert u;
 
+        Group queue = [SELECT Id FROM Group where type = 'Queue' and Name = 'Support Premium Queue' limit 1];
+        System.debug(queue);
+
+        GroupMember gm = new GroupMember(
+            GroupId = queue.Id,
+            UserOrGroupId = u.Id
+        );
+        insert gm;
+
         if (hasPermission) {
             PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'Support_Premium' LIMIT 1];
             insert new PermissionSetAssignment(AssigneeId = u.Id, PermissionSetId = ps.Id);
@@ -49,7 +58,8 @@ public class CaseRequestDetailTest {
         System.runAs(u) {
             Case_Request__c cr = new Case_Request__c(Status__c = 'Closed', Resolution_Notes__c = 'Test example');
             insert cr;
-            
+
+            System.debug([SELECT RecordType.Name, Owner.Name FROM Case_Request__c]);
             Map<String, Object> res = CaseRequestDetailController.reopenCaseRequest(cr.Id);
             cr = [SELECT Status__c FROM Case_Request__c WHERE Id = :cr.Id];
             
@@ -72,6 +82,4 @@ public class CaseRequestDetailTest {
             System.assertEquals('Você não tem permissão suficiente parar reabrir Cases.', res.get('error'));
         }
     }
-
-
 }

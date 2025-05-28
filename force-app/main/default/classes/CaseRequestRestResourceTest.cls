@@ -61,10 +61,9 @@ public class CaseRequestRestResourceTest {
     @IsTest
     static void testGetCaseRequestInfoInvalidId() {
         // Simula chamada REST
-        Id invalidId = '04325';
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
-        req.requestURI = '/services/apexrest/CaseRequest/' + invalidId;
+        req.requestURI = '/services/apexrest/CaseRequest/' + '04325';
         req.httpMethod = 'GET';
 
         RestContext.request = req;
