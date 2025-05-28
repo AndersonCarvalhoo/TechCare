@@ -1,10 +1,18 @@
 <template>
-    <lightning-card title="Resolution Notes">
-        <div class="slds-p-around_small">
+    <lightning-card title="Resolution Notes" icon-name="utility:note">
+        <div class="sticky-note slds-p-around_medium">
+            <div class="slds-m-bottom_small slds-align_absolute-center">
+                <span class="resolved-label">Resolved</span>
+            </div>
             <p>{visibleText}</p>
             <template if:true={isTruncated}>
                 <a href="javascript:void(0);" onclick={toggleText}>
-                    {showMoreButton}
+                    <template if:true={showMore}>
+                        Show more
+                    </template>
+                    <template if:false={showMore}>
+                        Show less
+                    </template>
                 </a>
             </template>
         </div>

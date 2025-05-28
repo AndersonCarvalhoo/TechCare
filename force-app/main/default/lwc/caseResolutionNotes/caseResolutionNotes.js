@@ -4,9 +4,8 @@ import CASE_CHANNEL from '@salesforce/messageChannel/caseChannel__c';
 
 export default class CaseResolutionNotes extends LightningElement {
     resolutionNotes;
-    showMore = false;
+    showMore = true;
     maxLength = 300;
-    showMoreButton;
 
     @wire(MessageContext)
     messageContext;
@@ -16,7 +15,6 @@ export default class CaseResolutionNotes extends LightningElement {
     }
 
     subscribeToMessageChannel() {
-        debugger
         subscribe(this.messageContext, CASE_CHANNEL, (message) => {
             if (message.status == 'Closed' && message.resolutionNotes) {
                 this.resolutionNotes = message.resolutionNotes;
@@ -29,8 +27,7 @@ export default class CaseResolutionNotes extends LightningElement {
     }
 
     get visibleText() {
-        if (this.showMore || !this.isTruncated) {
-            this.showMoreButton = this.showMore ? 'Show more' : 'Show less';
+        if (!this.showMore || !this.isTruncated) {
             return this.resolutionNotes;            
         }
 

@@ -30,7 +30,15 @@ global with sharing class CaseRequestRestResource {
         
         try {
             Case_Request__c caseRequest = [
-            SELECT Status__c, (SELECT SLA_Met__c FROM Case_Histories__r WHERE Case_Request__c = :caseId LIMIT 1) FROM Case_Request__c WHERE Id = :caseId LIMIT 1
+                SELECT Status__c, 
+                    (SELECT SLA_Met__c 
+                    FROM Case_Histories__r 
+                    WHERE Case_Request__c = :caseId 
+                    ORDER BY CreatedDate DESC 
+                    LIMIT 1)
+                FROM Case_Request__c 
+                WHERE Id = :caseId 
+                LIMIT 1
             ];
 
             response.statusCode = 200;
