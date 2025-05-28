@@ -17,8 +17,8 @@ export default class CaseRequestDetail extends LightningElement {
     interval;
     resolutionInputValue;
     resolutionNotes;
-    progressOffset;
-    slaMet;
+    //progressOffset;
+    slaMet = true;
 
     showModal;
     showInProgressButton;
@@ -85,6 +85,8 @@ export default class CaseRequestDetail extends LightningElement {
                 this.formattedTimeCircle = `${seconds}sec`;
             } else {
                 this.formattedTime = 'SLA not met';
+                this.formattedTimeCircle = 'SLA not met';
+                this.slaMet = false;
             }
 
             if (this.timeLeft > 0) {
@@ -180,11 +182,12 @@ export default class CaseRequestDetail extends LightningElement {
         this.dispatchEvent(event);
     }
 
-    runProgressOffset() {
+    get progressOffset() {
         const radius = 48;
         const circumference = 2 * Math.PI * radius;
         const percent = this.totalMilliseconds > 0 ? this.timeLeft / this.totalMilliseconds : 0;
-        this.progressOffset = circumference * (1 - percent); 
+        console.log(circumference * (1 - percent))
+        return percent > 0 ? circumference * (1 - percent) : 339.29; 
     }
 
     handleNoteChange(event) {
@@ -202,15 +205,4 @@ export default class CaseRequestDetail extends LightningElement {
         refreshApex(this.returnValue);
     }
 
-    get ringFillClass() {
-        if (this.timeLeft <= 0)  {
-            this.progressOffset = 0;
-            this.formattedTimeCircle = 'SLA not met';
-            this.slaMet = false;
-            return 'ring-fill danger';            
-        } else {
-            this.slaMet = true;
-            return 'ring-fill';
-        }
-    }
 }
