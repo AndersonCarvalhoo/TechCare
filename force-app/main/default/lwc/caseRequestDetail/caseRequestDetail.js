@@ -44,7 +44,9 @@ export default class CaseRequestDetail extends LightningElement {
             this.timeLeft = result.data.millisRemaining;
             this.slaStatus = result.data.status;    
             this.showInProgressButton = this.slaStatus == 'New'; 
-            this.showCompleteButton = this.slaStatus == 'In Progress' || this.slaStatus == 'Escalated';        
+            this.resolutionNotes = result.data.resolutionNotes;
+            this.showCompleteButton = this.slaStatus == 'In Progress' || this.slaStatus == 'Escalated';  
+
             if (this.slaStatus != 'Closed') {
                 this.showReopenButton = false;
                 this.showCircle = true;
@@ -57,7 +59,6 @@ export default class CaseRequestDetail extends LightningElement {
                 }
 
                 this.showCircle = false;
-                this.resolutionNotes = result.data.resolutionNotes;
             }
             this.updateStatusMessage();
         }
@@ -102,35 +103,8 @@ export default class CaseRequestDetail extends LightningElement {
         this.showModal = true;
     }
 
-    cancelCloseCase() {
+    closeCaseModal() {
         this.showModal = false;
-    }
-
-    handleInputChange(event) {
-        this.resolutionInputValue = event.target.value;
-    }
-
-    closeCase() {
-        const fields = {
-            Id: this.recordId,
-            Resolution_Notes__c: this.resolutionInputValue, 
-            Status__c: 'Closed'
-        };
-
-        const recordInput = { fields };
-        updateRecord(recordInput)
-            .then(() => {
-                this.showToast('Success', 'Closed Case with success!', 'success');
-                this.showModal = false;
-
-                // Força a atualização da página do registro
-                this.refreshScreen();
-                
-                this.updateStatusMessage();
-            })
-            .catch(error => {
-                this.showToast('Erro', error?.body?.message || 'Erro ao fechar o caso', 'error');
-            });
     }
 
     handleClickInProgressCase() {
@@ -188,10 +162,6 @@ export default class CaseRequestDetail extends LightningElement {
         const percent = this.totalMilliseconds > 0 ? this.timeLeft / this.totalMilliseconds : 0;
         console.log(circumference * (1 - percent))
         return percent > 0 ? circumference * (1 - percent) : 339.29; 
-    }
-
-    handleNoteChange(event) {
-        this.resolutionInputValue = event.detail;
     }
 
     disconnectedCallback() {

@@ -7,12 +7,13 @@
                     required
                     value={resolutionNotes}
                     onchange={handleInputChange}
-                    label="Resolution Notes">
+                    label="Resolution Notes"
+                    >
                 </lightning-textarea>
             </div>
             <div class="slds-modal__footer">
-                <button class="slds-button slds-button_neutral" onclick={handleCancel}>Cancel</button>
-                <button class="slds-button slds-button_brand" onclick={handleSave}>Save</button>
+                <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                <button class="slds-button slds-button_brand" onclick={updateCaseAsClosed} disabled={disabledButton}>Save</button>
             </div>
         </div>
     </section>

@@ -64,10 +64,11 @@
     
     <template if:true={showModal}>
         <c-case-close-modal
-            resolution-notes={resolutionInputValue}
-            onnotechange={handleNoteChange}
-            onsave={closeCase}
-            oncancel={cancelCloseCase}>
+            resolution-notes={resolutionNotes}
+            case-id={recordId}
+            onclosemodal={closeCaseModal}
+            onrefreshscreen={refreshScreen}
+            onupdatestatusmessage={updateStatusMessage}>
         </c-case-close-modal>
     </template>
 </template>
