@@ -242,5 +242,46 @@ sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
 - Atribuir usuários ao perfil Support
 - Atribuir Permission Set Support_Standard ou Support_Premium
 
+## 🔍 Como Testar Manualmente a Aplicação
+
+1. **Abra o App TechCare Support**
+   - No App Launcher, selecione **TechCare Support**.
+   - Verifique se os **dashboards** são exibidos corretamente na Home.
+
+2. **Criar um novo Case Request**
+   - Vá para a aba **Case Request**.
+   - Clique em **Novo** e selecione o **Record Type** (Support Premium ou Standard).
+   - Preencha os campos obrigatórios (Subject, Status, etc).
+   - Salve o registro.
+
+3. **Verificar cálculo do SLA Deadline**
+   - Após salvar, abra o Case Request.
+   - Verifique o campo **SLA Deadline**:
+     - Deve ser preenchido automaticamente com +24h (Premium) ou +8h (Standard).
+   - No LWC, o contador regressivo deve aparecer **somente para Premium**.
+
+4. **Testar botão de atribuição à fila**
+   - Clique no botão de **atribuir à fila** no LWC.
+   - Confirme se o **OwnerId** do registro foi alterado para a fila correta (Premium ou Standard Queue).
+
+5. **Fechar o caso com modal**
+   - Clique em **Fechar caso**.
+   - O modal deve aparecer com campo de resolução.
+   - Tente fechar sem preencher o campo **Resolution Notes** → deve exibir erro (Validation Rule).
+
+6. **Reabrir caso**
+   - Após fechar um caso, clique em **Reabrir caso**.
+   - Apenas usuários com permission set **Support_Premium** devem conseguir reabrir.
+   - O status do caso deve voltar para **In Progress**.
+
+7. **Verificar criação do histórico**
+   - Após fechar um caso, acesse os **registros relacionados**.
+   - Um novo **Case_History__c** deve ter sido criado.
+   - Verifique se os campos **Time Closed** e **SLA Met** estão corretos.
+
+---
+
+
+
 
 
