@@ -17,7 +17,6 @@ export default class CaseRequestDetail extends LightningElement {
     interval;
     resolutionInputValue;
     resolutionNotes;
-    //progressOffset;
     slaMet = true;
 
     showModal;
@@ -73,20 +72,20 @@ export default class CaseRequestDetail extends LightningElement {
 
             // Formatação do tempo
             if (days > 0) {
-                this.formattedTime = `${days} ${days === 1 ? 'day' : 'days'} ${hours} hours ${minutes} minutes ${seconds} seconds`;
+                this.formattedTime = `${days} ${days === 1 ? 'dia' : 'dias'} ${hours} horas ${minutes} minutos ${seconds} segundos`;
                 this.formattedTimeCircle = `${days}d ${hours > 0 ? hours+'h' : ''}`;
             } else if (hours > 0) {
-                this.formattedTime = `${hours} ${hours === 1 ? 'hour' : 'hours'} ${minutes} minutes ${seconds} seconds`;
+                this.formattedTime = `${hours} ${hours === 1 ? 'hora' : 'horas'} ${minutes} minutos ${seconds} segundos`;
                 this.formattedTimeCircle = `${hours}h`;
             } else if (minutes > 0) {
-                this.formattedTime = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ${seconds} seconds`;
+                this.formattedTime = `${minutes} ${minutes === 1 ? 'minuto' : 'minutos'} ${seconds} segundos`;
                 this.formattedTimeCircle = `${minutes}m`;
             } else if (seconds > 0) {
-                this.formattedTime = `${seconds} seconds`;
-                this.formattedTimeCircle = `${seconds}sec`;
+                this.formattedTime = `${seconds} segundos`;
+                this.formattedTimeCircle = `${seconds}seg`;
             } else {
-                this.formattedTime = 'SLA not met';
-                this.formattedTimeCircle = 'SLA not met';
+                this.formattedTime = 'SLA não cumprido';
+                this.formattedTimeCircle = 'SLA não cumprido';
                 this.slaMet = false;
             }
 
@@ -117,16 +116,14 @@ export default class CaseRequestDetail extends LightningElement {
         const recordInput = { fields };
         updateRecord(recordInput)
             .then(() => {
-                this.showToast('Success', 'Case has in progress!', 'success');
+                this.showToast('Success', 'O Caso agora está In Progress!', 'success');
                 this.showModal = false;
 
-                // Força a atualização da página do registro
                 this.refreshScreen();
-                
                 this.updateStatusMessage();
             })
             .catch(error => {
-                this.showToast('Erro', error?.body?.message || 'Erro ao fechar o caso', 'error');
+                this.showToast('Erro', 'Erro ao marcar In Progress! detalhes: ' + error?.body?.message, 'error');
             });
     }
 
@@ -141,7 +138,7 @@ export default class CaseRequestDetail extends LightningElement {
                 }
             })
             .catch( error  => {
-                this.showToast('Erro', error?.body?.message, 'error');
+                this.showToast('Erro', 'Erro inesperado: ' + error?.body?.message, 'error');
             });
     }
 

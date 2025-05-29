@@ -38,16 +38,16 @@ public with sharing class CaseRequestDetailService {
                 caseRequest.Status__c = 'In Progress';
                 Database.update(caseRequest);
                 return new Map<String, Object>{
-                    'message' => 'Case Request reaberto com sucesso!'
+                    'message' => 'Caso reaberto com sucesso!'
                 };
             } else {
                 return new Map<String, Object>{
-                    'error' => 'Você não tem permissão suficiente parar reabrir Cases.'
+                    'error' => 'Você não tem permissão suficiente parar reabrir Casos.'
                 };
             }
         }
         return new Map<String, Object>{
-            'error' => 'Case Request não encontrado'
+            'error' => 'Caso não encontrado'
         };
     }
 

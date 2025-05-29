@@ -7,12 +7,12 @@
                 </div>
                 <div class="slds-media__body">
                     <h2 class="slds-card__header-title">
-                        <span>SLA deadline regressive</span>
+                        <span>Contagem Regressiva - SLA deadline</span>
                     </h2>
                 </div>
                 <template if:true={showReopenButton}>
                     <div class="slds-no-flex">
-                        <button class="slds-button slds-button_neutral" onclick={reopenCase}>Reopen Case</button>
+                        <button class="slds-button slds-button_neutral" onclick={reopenCase}>Reabrir Caso</button>
                     </div>
                 </template>
             </header>
@@ -20,7 +20,7 @@
         <div class="slds-card__body slds-card__body_inner">
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-3">
-                    <p><b>Resolution Time</b></p>
+                    <p><b>Tempo de resolução</b></p>
                     <i>{formattedTime}</i>           
                     <template if:true={slaStatus}>
                         <p><b>Status</b></p>
@@ -28,12 +28,12 @@
                     </template>  
                     <template if:true={showInProgressButton}>
                         <div class="slds-no-flex">
-                            <button class="slds-button" onclick={handleClickInProgressCase}>Mark In Progress</button>
+                            <button class="slds-button" onclick={handleClickInProgressCase}>Marcar como In Progress</button>
                         </div>
                     </template>           
                     <template if:true={showCompleteButton}>
                         <div class="slds-no-flex">
-                            <button class="slds-button" onclick={handleClickCompleteCase}>Mark Completed</button>
+                            <button class="slds-button" onclick={handleClickCompleteCase}>Marcar como Completed</button>
                         </div>
                     </template>
                 </div>                                
@@ -47,7 +47,7 @@
                             <template if:true={slaMet}>
                                 <div class="center-label">
                                     <div>{formattedTimeCircle}</div>                               
-                                    <div class="label-sub">remaining</div>
+                                    <div class="label-sub">restantes</div>
                                 </div>
                             </template>
                             <template if:false={slaMet}>
