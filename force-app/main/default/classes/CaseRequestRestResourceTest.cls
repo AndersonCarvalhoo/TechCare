@@ -11,7 +11,7 @@
 * 1.0 | May 23, 2025 |   | Initial Version
 **/
 
-@isTest
+@IsTest
 public class CaseRequestRestResourceTest {
 
     @testSetup

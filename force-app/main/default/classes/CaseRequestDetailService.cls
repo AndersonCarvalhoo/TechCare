@@ -31,24 +31,21 @@ public with sharing class CaseRequestDetailService {
             WHERE Id = :caseRequestId 
             LIMIT 1
         ];
+        Boolean isSupportPremiumUser = SupportPremiumUser('Support_Premium');
 
-        Boolean isSupportPremiumUser = supportPremiumUser('Support_Premium');
-
-        if (caseRequest != null) {
-            if (isSupportPremiumUser) {
+        if(caseRequest != null) {
+            if(isSupportPremiumUser) {
                 caseRequest.Status__c = 'In Progress';
-                update caseRequest;
-
+                Database.update(caseRequest);
                 return new Map<String, Object>{
                     'message' => 'Case Request reaberto com sucesso!'
                 };
             } else {
                 return new Map<String, Object>{
-                    'error' => 'Você não tem permissão suficiente para reabrir Cases.'
+                    'error' => 'Você não tem permissão suficiente parar reabrir Cases.'
                 };
             }
         }
-
         return new Map<String, Object>{
             'error' => 'Case Request não encontrado'
         };
