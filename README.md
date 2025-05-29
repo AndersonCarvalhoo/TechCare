@@ -40,6 +40,8 @@ Para permissões mais específicas foram criados dois permission sets, o **Suppo
 
 Foi utilizado esse modelo de permissionamento seguindo as **boas práticas** do Salesforce na utilização de Permission Sets. Assim, seguindo a lógica de perfis para permissões gerais e Permission Sets para permissões específicas.
 
+---  
+
 ### 🧱 Custom Objects
 #### Case_Request__c 
 Para registrar os casos de suporte foi criado um objeto Case Request. O objeto Case Request armazena importantes para chamado, nele pode colocar o assunto, descrição, status, prioridade e dentre outros. 
@@ -77,6 +79,8 @@ Com a criação do record type é possível fazer a regra de negócio através d
 - Support Premium (Support_Premium)
 - Support Standard (Support_Standard)
 
+---  
+
 ### 🏗️ App Lightning TechCare Support
 Para facilitar a gestão e organização da solução existe o App Lightning TechCare Support.
 O App é visível apenas para usuários com o perfil Support criado para este fim, e também é visível para o Admin da ORG.
@@ -91,9 +95,11 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - Dashboards
 - Reports
 
+---  
+
 ### 📊 Relatórios e Dashboard de Casos
 
-### a. 🔍 Relatório Tabular - Casos Abertos por Prioridade e Status
+#### a. 🔍 Relatório Tabular - Casos Abertos por Prioridade e Status
 - **Nome:** Open Cases
 - **Tipo:** Matriz tabular
 - **Campos:**
@@ -103,9 +109,9 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - **Objetivo:** Visualizar rapidamente a quantidade de casos abertos por por prioridade e status.
 
 
-### 2. Dashboard: Análise de Casos
+#### 2. Dashboard: Análise de Casos
 
-### 1. Open Cases - Last 7 Days
+#### 1. Open Cases - Last 7 Days
 - **Tipo:** Donut Chart
 - **Métrica:** Contagem de casos
 - **Segmentação:**
@@ -114,12 +120,14 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - **Filtro:** Casos criados nos últimos 7 dias
 - **Objetivo:** Comparar visualmente a proporção de casos ainda em aberto versus casos encerrados recentemente.
 
-### 2. Average Resolution Time by Type
+#### 2. Average Resolution Time by Type
 - **Tipo:** Gráfico de barras verticais
 - **Métrica:** Tempo médio de resolução (em dias)
 - **Fonte:** Campo `Time_Closed__c` do objeto **Case_History__c**
 - **Cálculo:** Média do tempo de resolução, agrupada por **Record Type** do objeto **Case_Request__c**
 - **Objetivo:** Avaliar a eficiência de resolução conforme o tipo de suporte.
+
+---  
 
 ### ⚡ Page Layouts e Lightning Record Pages
 - Foram criados Page Layouts e Lightning Record Pages específicas para cada record type.
@@ -127,6 +135,8 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - O campo SLA Deadline não deve aparecer para o Support Standard. Para isso foi garantido que Na Page Layout e na Lightning Record Page não apareca.
 - No Lightning Record Page do Support Premium o campo SLA_Deadline__c só é exibido se o priority for diferente de 'Low'
 - Para cada Record Type foi criado um layout e posicionamento diferente.
+
+---  
 
 ### ⚙️ Validações e Automações  
 #### ⏰ Set SLA Deadline By RecordType (Record Triggered Flow)  
