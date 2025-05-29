@@ -188,8 +188,16 @@ Modal com um campo para inserir o resolution notes e encerrar o caso.
 ---
 
 ### 🧠 Apex classes  
-#### 📦 Classe `CaseRequestDetailController.cls`  
-Esta é a classe que interage com as requisições do componente `caseRequestDetail`, enviando dados específicos a partir de chamadas no LWC.  
+#### 📦 Classe `CaseRequestDetailController.cls` 
+Esta é a classe que interage com as requisições do componente `caseRequestDetail`, enviando dados específicos a partir de chamadas no LWC.
+
+#### 🧩 Arquitetura - CaseRequestDetailController
+```bash
+🧱 CaseRequestDetailController           # Classe que faz o contado direto com o FRONT, recebe as requisições do front e chama o service para realizar a regra.
+│
+└── 🧠 CaseRequestDetailService          # Classe que é chamada pelo Controller e faz toda a lógica da regra solicitada pelo LWC.
+```
+Foi utilizado essa arquitetura a fim de garantir mais Escalabilidade, Manutenibilidade, Reaproveitamento de código e boas práticas devido a separação de responsabilidades. 
 
 ##### 🧩 Método `getSLAInfo(Id caseRequestId)`  
 - 🧩 **Função**: Consulta os dados de Case_Request__c pelo Id retorna campos essênciais para criar a regra do timer regressivo do SLA.  
