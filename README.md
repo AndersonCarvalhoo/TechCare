@@ -91,6 +91,36 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - Dashboards
 - Reports
 
+### 📊 Relatórios e Dashboard de Casos
+
+### a. 🔍 Relatório Tabular - Casos Abertos por Prioridade e Status
+- **Nome:** Open Cases
+- **Tipo:** Matriz tabular
+- **Campos:**
+  - **Prioridade:** High, Medium, Low, (sem valor)
+  - **Status:** New, In Progress, Escalated, Closed
+- **Totalização:** Soma por status e prioridade
+- **Objetivo:** Visualizar rapidamente a quantidade de casos abertos por por prioridade e status.
+
+
+### 2. Dashboard: Análise de Casos
+
+### 1. Open Cases - Last 7 Days
+- **Tipo:** Donut Chart
+- **Métrica:** Contagem de casos
+- **Segmentação:**
+  - **Opened:** Casos com `Status__c` = *New*, *In Progress*, *Escalated*
+  - **Closed:** Casos com `Status__c` = *Closed*
+- **Filtro:** Casos criados nos últimos 7 dias
+- **Objetivo:** Comparar visualmente a proporção de casos ainda em aberto versus casos encerrados recentemente.
+
+### 2. Average Resolution Time by Type
+- **Tipo:** Gráfico de barras verticais
+- **Métrica:** Tempo médio de resolução (em dias)
+- **Fonte:** Campo `Time_Closed__c` do objeto **Case_History__c**
+- **Cálculo:** Média do tempo de resolução, agrupada por **Record Type** do objeto **Case_Request__c**
+- **Objetivo:** Avaliar a eficiência de resolução conforme o tipo de suporte.
+
 ### ⚡ Page Layouts e Lightning Record Pages
 - Foram criados Page Layouts e Lightning Record Pages específicas para cada record type.
 - Na Page Layout e Lightning Record Page do Standard Premium foi configurado o campo Priority como obrigátorio.
