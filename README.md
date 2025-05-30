@@ -44,7 +44,7 @@ Foi utilizado esse modelo de permissionamento seguindo as **boas práticas** do 
 
 ### 🧱 Custom Objects
 #### Case_Request__c 
-Para registrar os casos de suporte foi criado um objeto Case Request. O objeto Case Request armazena importantes para chamado, nele pode colocar o assunto, descrição, status, prioridade e dentre outros. 
+Para registrar os casos de suporte foi criado um objeto Case Request. O objeto Case Request armazena informações importantes para casos, nele, através de campos, é possível armazenar o assunto, descrição, status, prioridade e dentre outras informações importantes para a regra de negócio. 
 #### 📘 Estrutura do Case_Request__c
 | Label             | API Name              | Type                   | Required | Observações               |
 |-------------------|-----------------------|------------------------|----------|--------------------------|
@@ -306,11 +306,11 @@ sfdx force:source:deploy -p force-app/main/default -u TechCareSandbox
 ```bash
 sfdx force:org:open
 ```
-### ✅ 7. Rodar Testes Apex
+### ✅ 5. Rodar Testes Apex
 ```bash
 sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
 ```
-### ⚙️ 8. Pós-Deploy Manual
+### ⚙️ 6. Pós-Deploy Manual
 - Criar filas: Support Premium Queue e Support Standard Queue
 - Configurar Record Types com layouts e lightning pages
 - Atribuir usuários ao perfil Support
