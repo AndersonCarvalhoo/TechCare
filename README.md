@@ -214,7 +214,7 @@ Foi utilizado essa arquitetura a fim de garantir mais Escalabilidade, Manutenibi
 - 🔁 **Chamado por**: Pela própria classe através dos métodos getSLAInfo(Id caseRequestId) e reopenCaseRequest(Id caseRequestId) `.  
 
 ---
-
+### 🧠 Apex REST Resource Class 
 #### 🌐 Classe `CaseRequestRestResource.cls`  
 Classe responsável por expor um endpoint REST que retorna informações sobre um Case Request específico, dado o seu `Id`.  
 
@@ -224,15 +224,41 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
 - ✅ **Validações e comportamentos**:  
   - ❓ Verifica se o `caseId` está presente e é válido (15 caracteres ou mais).  
   - 🔎 Consulta o `Status__c` e o último `Case_History__c` relacionado, retornando seu campo `SLA_Met__c`.  
-  - 🔴 Retorna erro `400` se o `Id` estiver malformado.  
-  - 🟠 Retorna erro `404` se o `Case_Request__c` não for encontrado.  
-  - 📄 **Resposta esperada**  
-    ```json
-    {
-    "Status": "In Progress",
-    "Sla_Met": true
-    }
-    ```
+
+#### Endpoint
+`GET /services/apexrest/CaseRequest/{caseId}`
+
+#### Parâmetros
+| Parâmetro | Tipo   | Obrigatório | Descrição                      |
+|-----------|--------|-------------|-------------------------------|
+| caseId    | string | Sim         | ID do Case_Request__c         |
+
+#### Sucesso (200)
+```json
+{
+  "Status": "Em Análise",
+  "Sla_Met": true
+}
+```
+- Exemplo Body
+```json
+{
+  "Status": string,
+  "Sla_Met": boolean
+}
+```
+#### Erro (400)
+```json
+{
+  "error": "Invalid or missing CaseRequest Id"
+}
+```
+#### Erro (404)
+```json
+{
+  "error": "Case request not found"
+}
+```
 
 ### ⚡ Apex triggers 
 #### 📝 CaseRequestTrigger 
