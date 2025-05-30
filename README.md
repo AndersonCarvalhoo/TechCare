@@ -241,7 +241,7 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
 }
 ```
 - Exemplo Body
-```json
+```bash
 {
   "Status": string,
   "Sla_Met": boolean
