@@ -324,27 +324,30 @@ sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
 
 2. **Criar um novo Case Request**
    - Vá para a aba **Case Request**.
-   - Clique em **Novo** e selecione o **Record Type** (Support Premium ou Standard).
-   - Preencha os campos obrigatórios (Subject, Status, etc).
+   - Clique em **Novo** (Record type será definido automaticamente de acordo com o user Premium ou Standard)
+   - Preencha os campos obrigatórios
    - Salve o registro.
 
 3. **Verificar cálculo do SLA Deadline**
    - Após salvar, abra o Case Request.
    - Verifique o campo **SLA Deadline**:
      - Deve ser preenchido automaticamente com +24h (Premium) ou +8h (Standard).
+     - No perfil Standard SLA Deadline não aparece 
    - No LWC, o contador regressivo deve aparecer **somente para Premium**.
 
 4. **Testar botão de atribuição à fila**
-   - Clique no botão de **atribuir à fila** no LWC.
+   - Clique no botão de **assign to queue** no LWC.
    - Confirme se o **OwnerId** do registro foi alterado para a fila correta (Premium ou Standard Queue).
 
-5. **Fechar o caso com modal**
-   - Clique em **Fechar caso**.
+5. **Fechar o caso**
+   - No Lwc, Clique em **Marcar como Completed**.
    - O modal deve aparecer com campo de resolução.
-   - Tente fechar sem preencher o campo **Resolution Notes** → deve exibir erro (Validation Rule).
+   - Tente fechar sem preencher o campo **Resolution Notes** → deve exibir erro
+   - No support Standard, apos fechar o caso tente abrir novamente. Deve exibir um erro de validation rule 
+     
 
 6. **Reabrir caso**
-   - Após fechar um caso, clique em **Reabrir caso**.
+   - Após fechar um caso, no LWC clique em **Reabrir caso**.
    - Apenas usuários com permission set **Support_Premium** devem conseguir reabrir.
    - O status do caso deve voltar para **In Progress**.
 
