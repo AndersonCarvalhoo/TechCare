@@ -20,16 +20,16 @@ TechCare support é uma solução para criação e administração de casos de s
 .
 ├── force-app/                  # Elementos principais da org
 │   └── main/default/
-│       ├── applications/       # 
+│       ├── applications/       # Applications
 │       ├── classes/            # Apex classes e testes
-│       ├── customPermissions/  # 
-│       ├── dashboards/         # 
+│       ├── customPermissions/  # Custom Permissions Criadas
+│       ├── dashboards/         # Dashboards criados
 │       ├── flows/              # Apex classes e testes
 │       ├── lwc/                # Componentes Lightning Web Components
 │       ├── messageChannels/    # Canais de mensagem (pubSub do LWC)
 │       ├── objects/            # Objetos customizados
 │       ├── permissionsets/     # Permissões customizadas
-│       ├── reports/unfiled$public  # Permissões customizadas
+│       ├── reports/unfiled$public  # Reports customizados
 │       └── triggers/           # Triggers Apex
 ```
 
