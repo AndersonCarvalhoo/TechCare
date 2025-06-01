@@ -79,6 +79,14 @@ Com a criação do record type é possível fazer a regra de negócio através d
 - Support Premium (Support_Premium)
 - Support Standard (Support_Standard)
 
+--- 
+
+### Queues para cada Permission Set
+Para facilitar a produtividade e organização dos casos da solução, foram criadas duas filas, uma para dada permission set.
+- Support Premium Queue
+- Support Standard Queue
+Foram adicionados usuários a fila nanualmente para que possam visualizar registros atribuídos a ela.
+
 ---  
 
 ### 🏗️ App Lightning TechCare Support
@@ -171,6 +179,8 @@ Flow responsável por enviar email para membros de uma fila específica, informa
 Verifica se existe membro na fila, caso tenha membro na fila ele pega os membros e envia o email.
 
 Este flow é chamado ao final do flow Assign to Queue.
+
+---
 
 #### 🚫 Require ResolutionNotes Before Close (Validation Rule)  
 Impede que o Case Request seja fechado sem antes ter preenchido o campo Resolution_Notes__c do objeto.  
@@ -357,6 +367,7 @@ sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
 4. **Testar botão de atribuição à fila**
    - Clique no botão de **assign to queue** no LWC.
    - Confirme se o **OwnerId** do registro foi alterado para a fila correta (Premium ou Standard Queue).
+   - Além disso, é possível verificar se o email foi enviado para os usuários da fila.
 
 5. **Fechar o caso**
    - No Lwc, Clique em **Marcar como Completed**.
