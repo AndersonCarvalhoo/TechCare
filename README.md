@@ -10,11 +10,8 @@ TechCare support é uma solução para criação e administração de casos de s
 
 - Salesforce (SFDX)
 - Apex
-- Triggers
 - LWC (Lightning Web Components)
 - Flows
-- Permission Sets
-- Validation Rules
 - Git + GitHub
 
 ## 📁 Estrutura do Projeto
@@ -23,12 +20,17 @@ TechCare support é uma solução para criação e administração de casos de s
 .
 ├── force-app/                  # Elementos principais da org
 │   └── main/default/
+│       ├── applications/       # 
 │       ├── classes/            # Apex classes e testes
-│       ├── triggers/           # Triggers Apex
+│       ├── customPermissions/  # 
+│       ├── dashboards/         # 
+│       ├── flows/              # Apex classes e testes
 │       ├── lwc/                # Componentes Lightning Web Components
+│       ├── messageChannels/    # Canais de mensagem (pubSub do LWC)
 │       ├── objects/            # Objetos customizados
 │       ├── permissionsets/     # Permissões customizadas
-│       └── messageChannels/    # Canais de mensagem (pubSub do LWC)
+│       ├── reports/unfiled$public  # Permissões customizadas
+│       └── triggers/           # Triggers Apex
 ```
 
 ## 🛠️ Funcionalidades Implementadas
@@ -59,6 +61,8 @@ Para registrar os casos de suporte foi criado um objeto Case Request. O objeto C
 | SLA Deadline       | SLA_Deadline__c       | Date/Time              | Não      | Data/hora limite para SLA |
 | Status             | Status__c             | Picklist               | Sim      | Status atual do caso      |
 | Subject            | Subject__c            | Text (255)             | Não      | Assunto do caso          |
+| Contact Phone      | Contact_Phone__c      | Phone                  | Não      | Phone Number do contato |
+| Contact Email      | Contact_Email__c      | Email                  | Não      | Email do contato        |
 #### Case_History__c
 Para registrar o histórico do registro foi criado um objeto Case History. O objeto Case History é criado e armazena valores que são populados após o fechamento do Case. 
 #### 📘 Estrutura do Objeto: Case_History
@@ -162,6 +166,8 @@ Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow peg
 Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.  
 
 Além disso ao final desse flow é enviado um email para os usuários da fila informando que o case foi atribuido a fila.
+![image](https://github.com/user-attachments/assets/5e70a32f-ef73-4310-8fbd-257b0f022e53)
+
 
 ---  
 
@@ -204,19 +210,65 @@ AND(
 )
 ```
 
+Para a execução desse validation rule foi criado um custom permission chamado canReopenCaseRequest e atribuido ao Support Premium. Com basse Nesse custom permission definimos quais permission sets irão poder reabrir o caso, facilitando a reutilização futuramente.
+
 ---
 
 ### 🎨 Lightning Web Components ( LWC )
-- 🪟 `caseCloseModal`: Componente de modal customizado para encerramento de casos com regras de validação.
-Modal com um campo para inserir o resolution notes e encerrar o caso.
-Este componente é filho do caseRequestDetail, onde possuí comunicação enviando informações para o pai, e recebendo informacoes do pai
-- 🧾 `caseRequestDetail`: SLA_Deadline__c em contagem regressiva dinâmica e botões para reabrir, avançar para In Progress e fechar caso. 
-![image](https://github.com/user-attachments/assets/432ef146-dc37-4e4d-b2cc-b368531ccbe2)
-- `caseResolutionNotes`: Componente que funciona a partir de uma comunicação PubSub. ele é o subscriber e o componente caseRequestDetail é o publisher. Quando o Case é fechado no LWC, o publisher envia o pub e após isso o caseResolutionNotes se insreveve e exibe as informações.
+
+### 🧾 `caseRequestDetail`
+#### Funcionalidade
+- Exibe o campo `SLA_Deadline__c` com **contagem regressiva dinâmica**.
+- Botões de ação:
+  - **Reabrir** o caso.
+  - **Avançar para “In Progress”**.
+  - **Fechar o caso** (abrindo o `caseCloseModal`).
+
+#### Comunicação
+- **Pai de:** `caseCloseModal`.
+- Atua como **publisher** no padrão **PubSub**, enviando mensagens para outros componentes quando o caso é fechado.
+
+#### Visual
+![image](https://github.com/user-attachments/assets/8c259d86-5bf1-4caa-a920-2a571f43738f)
+![image](https://github.com/user-attachments/assets/ca1d8f6e-e2f2-4ddc-865c-c1add01533c6)
+![image](https://github.com/user-attachments/assets/9382efb2-6298-451c-833c-6a9a95e0f562)
+
+
+---
+
+### 🪟 `caseCloseModal`
+Componente de modal customizado para encerramento de casos com regras de validação.
+
+#### Funcionalidade
+- Exibe um input obrigatório para inserção das *Resolution Notes*.
+- Possui validações antes de permitir o fechamento do caso.
+- Envia um evento ao componente pai ao concluir o fechamento do caso.
+
+#### Comunicação
+- **Filho de:** `caseRequestDetail`.
+- **Recebe dados do pai** e **envia eventos de volta** com as informações do fechamento.
+
+#### Visual
+![image](https://github.com/user-attachments/assets/3cc98bab-cc10-4813-8992-667d3cfd4166)
+
+---
+### 📄 `caseResolutionNotes`
+#### Funcionalidade
+- Monitora eventos de fechamento de caso.
+- Atualiza dinamicamente seu conteúdo com as notas inseridas no `caseCloseModal`.
+
+#### Comunicação
+- Atua como **subscriber** via **PubSub**.
+- **Recebe eventos do componente `caseRequestDetail`**, que publica os dados ao encerrar o caso.
+
+#### Visual
+![image](https://github.com/user-attachments/assets/da0499fe-e794-4808-9b89-f0493e3a17c4)
+
 
 ---
 
 ### 🧠 Apex classes  
+
 #### 📦 Classe `CaseRequestDetailController.cls` 
 Esta é a classe que interage com as requisições do componente `caseRequestDetail`, enviando dados específicos a partir de chamadas no LWC.
 
@@ -304,13 +356,23 @@ Cria um registro de Case History vinculado ao Case Request.
 └── 🧠 CaseRequestService             # Service que verifica se o `SLA_Deadline` foi cumprido e cria o objeto `Case_History__c` populando os campos de forma dinâmica
 ```
 
+### 🧪 Apex Tests
+Foram criadas classes de testes para cobrir todos os códigos APEX desenvolvidos na solução. Cada classe de teste tem seus respectivos métodos que testam determinados comportamentos.
+
+Com base nisso, classes Apex foram devidamente testadas, garantindo robustez e qualidade na entrega dos códigos. Facilitando, também, um possível deploy para uma Org em PROD.
+
+![image](https://github.com/user-attachments/assets/e6d0fdb5-0e38-46ca-bedf-3530d2dbdfe6)
+![image](https://github.com/user-attachments/assets/9f256d19-a1dc-4ace-b19e-4f44e32e16fb)
+
+--- 
+
 ## 🚀 Instruções de Instalação e Deploy
 
 ### 📦 Pré-requisitos
 
 - Salesforce CLI (SFDX)
 - VS Code com Salesforce Extension Pack
-- Conta DevHub, Scratch Org ou Sandbox
+- Conta Dev, Scratch Org ou Sandbox
 - Git instalado
 - Acesso ao repositório do projeto
 
