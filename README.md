@@ -180,10 +180,12 @@ AND(
 ---
 
 ### 🎨 Lightning Web Components ( LWC )
-- 🪟 `caseCloseModal`: modal customizado para encerramento de casos com regras de validação.
+- 🪟 `caseCloseModal`: Componente de modal customizado para encerramento de casos com regras de validação.
 Modal com um campo para inserir o resolution notes e encerrar o caso.
+Este componente é filho do caseRequestDetail, onde possuí comunicação enviando informações para o pai, e recebendo informacoes do pai
 - 🧾 `caseRequestDetail`: SLA_Deadline__c em contagem regressiva dinâmica e botões para reabrir, avançar para In Progress e fechar caso. 
 ![image](https://github.com/user-attachments/assets/432ef146-dc37-4e4d-b2cc-b368531ccbe2)
+- `caseResolutionNotes`: Componente que funciona a partir de uma comunicação PubSub. ele é o subscriber e o componente caseRequestDetail é o publisher. Quando o Case é fechado no LWC, o publisher envia o pub e após isso o caseResolutionNotes se insreveve e exibe as informações.
 
 ---
 
