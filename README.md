@@ -340,6 +340,7 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
   "error": "Case request not found"
 }
 ```
+---
 
 ### ⚡ Apex triggers 
 #### 📝 CaseRequestTrigger 
