@@ -2,6 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Support_Standard</fullName>
     <active>true</active>
+    <compactLayoutAssignment>Compact_Layout_Support</compactLayoutAssignment>
     <description>Record type para usuários com permissão de Support Standard</description>
     <label>Support Standard</label>
     <picklistValues>

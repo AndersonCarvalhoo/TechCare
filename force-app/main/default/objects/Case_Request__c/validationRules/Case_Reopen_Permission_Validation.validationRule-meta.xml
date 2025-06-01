@@ -4,8 +4,9 @@
     <active>true</active>
     <description>Apenas usuários com a permissão para reabrir o case podem reabrir.</description>
     <errorConditionFormula>AND(
-  ISCHANGED( Status__c ),
-  NOT(ISPICKVAL( Status__c , &apos;Closed&apos;)),
+  ISCHANGED(Status__c),
+  NOT(ISPICKVAL(Status__c, &apos;Closed&apos;)),
+  ISPICKVAL(PRIORVALUE(Status__c), &apos;Closed&apos;),
   NOT($Permission.canReopenCaseRequest)
 )</errorConditionFormula>
     <errorMessage>Você não tem permissão para reabrir um caso.</errorMessage>

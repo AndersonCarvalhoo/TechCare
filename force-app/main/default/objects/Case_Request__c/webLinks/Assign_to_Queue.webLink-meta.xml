@@ -10,5 +10,5 @@
     <masterLabel>Assign to Queue</masterLabel>
     <openType>noSidebar</openType>
     <protected>false</protected>
-    <url>/flow/Assignment_Case_to_Queue?recordId={!Case_Request__c.Id}</url>
+    <url>/flow/Assignment_Case_to_Queue?recordId={!Case_Request__c.Id}&amp;retURL=/{!Case_Request__c.Id}</url>
 </WebLink>

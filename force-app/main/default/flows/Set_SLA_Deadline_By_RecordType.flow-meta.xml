@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <description>Atribuindo o valor 8 a variável SLA Deadline que é usada para atualizar o campo</description>
+        <name>Set_SLA_Deadline_To_24_Hours</name>
+        <label>Set SLA Deadline To 24 Hours</label>
+        <locationX>314</locationX>
+        <locationY>431</locationY>
+        <assignmentItems>
+            <assignToReference>var_SLA_Deadline</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <numberValue>24.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_SLA_Deadline_Field</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Atribuindo o valor 24 a variável SLA Deadline que é usada para atualizar o campo</description>
+        <name>Set_SLA_Deadline_To_8_Hours</name>
+        <label>Set SLA Deadline To 8 Hours</label>
+        <locationX>50</locationX>
+        <locationY>431</locationY>
+        <assignmentItems>
+            <assignToReference>var_SLA_Deadline</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <numberValue>8.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_SLA_Deadline_Field</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <description>Decidir qual é o record type do record triggered que aciona o flow.</description>
+        <name>What_Is_The_Record_Type</name>
+        <label>What is the Record Type?</label>
+        <locationX>314</locationX>
+        <locationY>323</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>RecordType_Support_Premium</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Support_Premium</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_SLA_Deadline_To_8_Hours</targetReference>
+            </connector>
+            <label>Type Support Premium</label>
+        </rules>
+        <rules>
+            <name>Type_Support_Standard</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Support_Standard</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_SLA_Deadline_To_24_Hours</targetReference>
+            </connector>
+            <label>Type Support Standard</label>
+        </rules>
+    </decisions>
+    <description>Este Record Triggered flow é acionado sempre que um Case_Request__c é criado. Ao ser acionado ele preenche o campo SLA_Deadline__c com base no record type. Caso o record type seja Support Premium ele irá preencher a data de hoje + 8h, mas, caso o seja Support Standard ele irá preencher o SLA Deadline com a data de hoje + 24h</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>Calcula o valor do SLA Deadline com base na variável var_SLA_Deadline.
+
+No retorno da formula:
+Caso a variável possua o valor 8, será atribuída a data de hoje +8h 
+Caso a variável possua o valor 24, será atribuída a data de hoje +24h</description>
+        <name>Calculate_SLA_Deadline_DateTime</name>
+        <dataType>DateTime</dataType>
+        <expression>NOW() + ( {!var_SLA_Deadline} / 24 )</expression>
+    </formulas>
+    <interviewLabel>Set {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Set SLA Deadline By RecordType</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_SLA_Deadline_Field</name>
+        <label>Update SLA Deadline Field</label>
+        <locationX>314</locationX>
+        <locationY>623</locationY>
+        <inputAssignments>
+            <field>SLA_Deadline__c</field>
+            <value>
+                <elementReference>Calculate_SLA_Deadline_DateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>What_Is_The_Record_Type</targetReference>
+        </connector>
+        <object>Case_Request__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <description>Armazena o valor do SLA Deadline.</description>
+        <name>var_SLA_Deadline</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+</Flow>
