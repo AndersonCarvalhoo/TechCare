@@ -153,7 +153,24 @@ Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow peg
 
 Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.  
 
+Além disso ao final desse flow é enviado um email para os usuários da fila informando que o case foi atribuido a fila.
+
 ---  
+
+#### Create Case Request (Record triggered Flow)
+
+Ao criar o Case request esse flow é acionado e chama o Assignment Case to Queue através de um subflow.
+
+Esse flow foi criado para que o flow autolaunched funcione através de um botão e através de um record triggered flow como este também.
+
+---
+
+#### Flow Send Email
+Flow responsável por enviar email para membros de uma fila específica, informando que um novo caso foi atribuído a fila.
+
+Verifica se existe membro na fila, caso tenha membro na fila ele pega os membros e envia o email.
+
+Este flow é chamado ao final do flow Assign to Queue.
 
 #### 🚫 Require ResolutionNotes Before Close (Validation Rule)  
 Impede que o Case Request seja fechado sem antes ter preenchido o campo Resolution_Notes__c do objeto.  
