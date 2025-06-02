@@ -362,7 +362,7 @@ Foram criadas classes de testes para cobrir todos os códigos APEX desenvolvidos
 
 Com base nisso, classes Apex foram devidamente testadas, garantindo robustez e qualidade na entrega dos códigos. Facilitando, também, um possível deploy para uma Org em PROD.
 
-![image](https://github.com/user-attachments/assets/e6d0fdb5-0e38-46ca-bedf-3530d2dbdfe6)
+![image](https://github.com/user-attachments/assets/b24b5470-7c6d-4739-90c7-02163c71378f)
 ![image](https://github.com/user-attachments/assets/9f256d19-a1dc-4ace-b19e-4f44e32e16fb)
 
 --- 
