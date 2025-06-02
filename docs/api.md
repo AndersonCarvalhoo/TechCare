@@ -35,10 +35,23 @@ Esse endpoint pode ser utilizado por sistemas externos que queiram consultar ess
   "error": "Invalid or missing CaseRequest Id"
 }
 ```
+- Exemplo Body
+```bash
+{
+  "error": string,
+}
+```
+
 ### Erro (404)
 ```json
 {
   "error": "Case request not found"
+}
+```
+- Exemplo Body
+```bash
+{
+  "error": string,
 }
 ```
 
