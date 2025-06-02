@@ -14,7 +14,7 @@
 @IsTest
 public class CaseRequestHandlerTest {
     
-    @testSetup //Configuração dos dados reutilizáveis
+    @testSetup 
     static void setupData() {
         Case_Request__c cr = new Case_Request__c(
             Status__c = 'New'
@@ -22,7 +22,7 @@ public class CaseRequestHandlerTest {
         insert cr;
     }
     
-    @isTest //Teste da criação do histório após fechar o caso
+    @isTest 
     static void testCreatesHistoryWhenClosed() {
         Case_Request__c crToUpdate = [SELECT Id, Status__c, Resolution_Notes__c FROM Case_Request__c WHERE Status__c = 'New' LIMIT 1];
         
@@ -37,7 +37,7 @@ public class CaseRequestHandlerTest {
         System.assertEquals(1, results.size(), 'Deveria retornar 1 registro');
     }
 
-    @isTest //Teste da criação do histório após fechar o caso sem preeencher o campo Resolution Notes
+    @isTest 
     static void testCreatesHistoryWhenClosedWithoutResolutionNotes() {
         Case_Request__c crToUpdate = [SELECT Id, Status__c, Resolution_Notes__c FROM Case_Request__c WHERE Status__c = 'New' LIMIT 1];        
         crToUpdate.Status__c = 'Closed';
@@ -52,8 +52,8 @@ public class CaseRequestHandlerTest {
         Test.stopTest();
     }
 
-    @isTest //Teste da criação do histório para SLA não cumprido
-    static void testCreatesHistoryWheSlaNotMet() {
+    @isTest 
+    static void testCreatesHistoryWhenSlaNotMet() {
         Case_Request__c crToUpdate = [SELECT Id, Status__c, Resolution_Notes__c, SLA_Deadline__c  FROM Case_Request__c WHERE Status__c = 'New' LIMIT 1];
         crToUpdate.SLA_Deadline__c = Datetime.now().addDays(-1);
         crToUpdate.Status__c = 'Closed';

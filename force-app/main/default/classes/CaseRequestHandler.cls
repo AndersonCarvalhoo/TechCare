@@ -23,13 +23,11 @@ public with sharing class CaseRequestHandler {
             Case_Request__c oldRec = oldCases.get(caseId);
             Case_Request__c newRec = newCases.get(caseId);
 			
-            //Valida se o status mudou para Closed
             if (oldRec.Status__c != STATUS_CLOSED && newRec.Status__c == STATUS_CLOSED) {
                 caseHistories.add(CaseRequestService.buildHistory(newRec, dateTimeNow));
             }
         }
 
-        //Se a lista não está vazia, insere os históricos
         if(!caseHistories.isEmpty()) {
             Database.insert(caseHistories);
         }

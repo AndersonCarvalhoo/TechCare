@@ -38,7 +38,6 @@ public class CaseRequestRestResourceTest {
             SELECT Id FROM Case_Request__c WHERE Status__c = 'Closed' LIMIT 1
         ];
 
-        // Simula chamada REST
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         req.requestURI = '/services/apexrest/CaseRequest/' + caseReq.Id;
@@ -47,7 +46,6 @@ public class CaseRequestRestResourceTest {
         RestContext.request = req;
         RestContext.response = res;
 
-        // Chamada ao método @HttpGet
         CaseRequestRestResource.getCaseRequestInfo();
 
         String responseBody = RestContext.response.responseBody.toString();
@@ -60,7 +58,6 @@ public class CaseRequestRestResourceTest {
 
     @IsTest
     static void testGetCaseRequestInfoInvalidId() {
-        // Simula chamada REST
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         req.requestURI = '/services/apexrest/CaseRequest/' + '04325';
@@ -69,7 +66,6 @@ public class CaseRequestRestResourceTest {
         RestContext.request = req;
         RestContext.response = res;
 
-        // Chamada ao método @HttpGet
         CaseRequestRestResource.getCaseRequestInfo();
 
         String responseBody = RestContext.response.responseBody.toString();
@@ -82,7 +78,6 @@ public class CaseRequestRestResourceTest {
 
     @IsTest
     static void testGetCaseRequestInfoQueryException() {
-        // Simula chamada REST
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         req.requestURI = '/services/apexrest/CaseRequest/' + 'a00gK504003w454QAQ';
@@ -91,7 +86,6 @@ public class CaseRequestRestResourceTest {
         RestContext.request = req;
         RestContext.response = res;
 
-        // Chamada ao método @HttpGet
         CaseRequestRestResource.getCaseRequestInfo();
 
         String responseBody = RestContext.response.responseBody.toString();
