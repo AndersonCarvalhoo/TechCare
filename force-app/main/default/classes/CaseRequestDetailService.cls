@@ -1,3 +1,16 @@
+/**
+* @File Name : CaseRequestDetailService.cls
+* @Description : Class responsible for implementing the business logic of the requests made by the controller.
+* @Author : Anderson Carvalho da Silva
+* @Last Modified By : Anderson Carvalho da Silva
+* @Last Modified On : May 21, 2025
+* @Modification Log :
+*==============================================================================
+* Ver | Date | Author | Modification
+*==============================================================================
+* 1.0 | May 21, 2025 | Anderson Carvalho da Silva | Initial Version
+**/
+
 public with sharing class CaseRequestDetailService {
 
     public static Map<String, Object> getSLAInfo(Id caseRequestId) {
