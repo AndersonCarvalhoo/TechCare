@@ -1,7 +1,7 @@
 # TechCare Support in Salesforce
 ## Informações do Responsável
 - Nome: Anderson Carvalho
-- Perfil Escolhido: **Desenvolvedor** com conhecimentos em Admin
+- Perfil Escolhido: **Desenvolvedor** (Com conhecimentos em ADMIN)
 
 ## TechCare Support Project
 TechCare support é uma solução para criação e administração de casos de suporte. A partir do app TechCare Support o usuário do suporte pode registrar casos, pegar casos da fila baseado na prioridade, verificar dashboards essenciais na Home do App, verificar SLA de forma rápida, visual e intuitiva dentre outras vantagens. O foco do TechCare Support é aumentar a produtividade e organização da equipe de suporte.
@@ -13,6 +13,7 @@ TechCare support é uma solução para criação e administração de casos de s
 - LWC (Lightning Web Components)
 - Flows
 - Git + GitHub
+- Funcionalidades Gerais da Plataforma Salesforce.
 
 ## 📁 Estrutura do Projeto
 
@@ -42,6 +43,10 @@ Para permissões mais específicas foram criados dois permission sets, o **Suppo
 
 Foi utilizado esse modelo de permissionamento seguindo as **boas práticas** do Salesforce na utilização de Permission Sets. Assim, seguindo a lógica de perfis para permissões gerais e Permission Sets para permissões específicas.
 
+
+- **Visibilidade SLA Deadline.**: Apenas na Permission Set **Support Premium** foi permitido a leitura do campo SLA_Deadline__c.
+- **Impossibilidade de deletar casos**: Seguindo as boas práticas de permissionamento, nenhum usuário do Support pode deletar Registros de Casos manualmente. É extremamente essencial que o histório dos casos sejam mantidos e que apenas superiores tenham a possibilidade de deletar.
+
 ---  
 
 ### 🧱 Custom Objects
@@ -65,7 +70,7 @@ Para registrar os casos de suporte foi criado um objeto Case Request. O objeto C
 | Contact Email      | Contact_Email__c      | Email                  | Não      | Email do contato        |
 #### Case_History__c
 Para registrar o histórico do registro foi criado um objeto Case History. O objeto Case History é criado e armazena valores que são populados após o fechamento do Case. 
-#### 📘 Estrutura do Objeto: Case_History
+#### 📘 Estrutura do Objeto: Case_History__c
 
 | Label             | API Name              | Type                        | Required | Observações                            |
 |-------------------|------------------------|-----------------------------|----------|----------------------------------------|
@@ -111,7 +116,7 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 
 ### 📊 Relatórios e Dashboard de Casos
 
-#### a. 🔍 Relatório Tabular - Casos Abertos por Prioridade e Status
+#### 🔍 Relatório Tabular - Casos Abertos por Prioridade e Status
 - **Nome:** Open Cases
 - **Tipo:** Matriz tabular
 - **Campos:**
@@ -142,10 +147,12 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 ---  
 
 ### ⚡ Page Layouts e Lightning Record Pages
+Page Layouts e Lightning Record Pages foram criadas para o registro Case_Request__c, através da Lightning Record Pages foi utilizado Dynamic Forms e Dynamic Actions.
+
 - Foram criados Page Layouts e Lightning Record Pages específicas para cada record type.
-- Na Page Layout e Lightning Record Page do Standard Premium foi configurado o campo Priority como obrigátorio.
-- O campo SLA Deadline não deve aparecer para o Support Standard. Para isso foi garantido que Na Page Layout e na Lightning Record Page não apareca.
-- No Lightning Record Page do Support Premium o campo SLA_Deadline__c só é exibido se o priority for diferente de 'Low'
+- Na Page Layout e através do Dynamics Forms Lightning Record Page do Standard Premium foi configurado o campo Priority como obrigátorio.
+- O campo SLA Deadline não deve aparecer para o Support Standard. Para isso foi garantido que Na Page Layout e na Lightning Record Page Dynamics Forms não apareça.
+- Com Dynamics Forms, utilizando filtros, no Lightning Record Page do Support Premium o campo SLA_Deadline__c só é exibido se o priority for diferente de 'Low'
 - Para cada Record Type foi criado um layout e posicionamento diferente.
 
 ---  
@@ -166,6 +173,9 @@ Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow peg
 Foram criadas duas filas, a fila Support Premium Queue e Support Standard Queue. Com isso, baseado no RecordType o flow atribui o OwnerId a uma das respectivas filas.  
 
 Além disso ao final desse flow é enviado um email para os usuários da fila informando que o case foi atribuido a fila.
+
+Ele armazena a queue com base no **RecordType** e através da List view da para ordernar através do **Priority**. Assim cumprindo os requisitos de exibir baseado no priority e record type.
+
 ![image](https://github.com/user-attachments/assets/5e70a32f-ef73-4310-8fbd-257b0f022e53)
 
 
@@ -202,6 +212,9 @@ AND (
 
 #### 🔐 Case Reopen Permission Validation (Validation Rule)
 Verifica se o usuário tem permissão para reabrir um caso.
+
+Essa regra de validação foi criada para permitir que apenas usuários com **Support Premium** possam reabrir casos.
+
 ```bash
 AND(
   ISCHANGED( Status__c ),
@@ -295,6 +308,24 @@ Foi utilizado essa arquitetura a fim de garantir mais Escalabilidade, Manutenibi
 - 🔁 **Chamado por**: Pela própria classe através dos métodos getSLAInfo(Id caseRequestId) e reopenCaseRequest(Id caseRequestId) `.  
 
 ---
+
+### ⚡ Apex triggers 
+#### 📝 CaseRequestTrigger 
+Cria um registro de Case History vinculado ao Case Request. 
+- 🧩 **Função**: Sempre que o Objeto alterar o Status para Closed a trigger irá criar um registro de Case History, irá popular o `Time_Closed__c` com a DateTime Now e irá verificar se o SLA foi cumprido. Caso o SLA seja cumprido o campo `SLA_Met__c` será true, ao contrario será false.`.  
+- 🔁 **Acionado**: O Trigger é acionado sempre que um objeto é alterado, o Helper verifica se o objeto teve o Campo `Status__c` mudado para 'Closed'.  
+
+#### 🧩 Arquitetura de Trigger - Case Request
+```bash
+📌 CaseRequestTrigger                 # Trigger Verificando AFTER_UPDATE e chamando `CaseRequestHandler.afterUpdate(oldCases, newCases)`
+│
+└── 🧱 CaseRequestHandler             # Handler pegando os registros alterados, verificando se o status foi fechado, mandando para o Service criar o Case_History__c e inserindo no BD
+│
+└── 🧠 CaseRequestService             # Service que verifica se o `SLA_Deadline` foi cumprido e cria o objeto `Case_History__c` populando os campos de forma dinâmica
+```
+
+--- 
+
 ### 🧠 Apex REST Resource Class 
 #### 🌐 Classe `CaseRequestRestResource.cls`  
 Classe responsável por expor um endpoint REST que retorna informações sobre um Case Request específico, dado o seu `Id`.  
@@ -340,22 +371,8 @@ Classe responsável por expor um endpoint REST que retorna informações sobre u
   "error": "Case request not found"
 }
 ```
+
 ---
-
-### ⚡ Apex triggers 
-#### 📝 CaseRequestTrigger 
-Cria um registro de Case History vinculado ao Case Request. 
-- 🧩 **Função**: Sempre que o Objeto alterar o Status para Closed a trigger irá criar um registro de Case History, irá popular o `Time_Closed__c` com a DateTime Now e irá verificar se o SLA foi cumprido. Caso o SLA seja cumprido o campo `SLA_Met__c` será true, ao contrario será false.`.  
-- 🔁 **Acionado**: O Trigger é acionado sempre que um objeto é alterado, o Helper verifica se o objeto teve o Campo `Status__c` mudado para 'Closed'.  
-
-#### 🧩 Arquitetura de Trigger - Case Request
-```bash
-📌 CaseRequestTrigger                 # Trigger Verificando AFTER_UPDATE e chamando `CaseRequestHandler.afterUpdate(oldCases, newCases)`
-│
-└── 🧱 CaseRequestHandler             # Handler pegando os registros alterados, verificando se o status foi fechado, mandando para o Service criar o Case_History__c e inserindo no BD
-│
-└── 🧠 CaseRequestService             # Service que verifica se o `SLA_Deadline` foi cumprido e cria o objeto `Case_History__c` populando os campos de forma dinâmica
-```
 
 ### 🧪 Apex Tests
 Foram criadas classes de testes para cobrir todos os códigos APEX desenvolvidos na solução. Cada classe de teste tem seus respectivos métodos que testam determinados comportamentos.
@@ -365,7 +382,7 @@ Com base nisso, classes Apex foram devidamente testadas, garantindo robustez e q
 ![image](https://github.com/user-attachments/assets/b24b5470-7c6d-4739-90c7-02163c71378f)
 ![image](https://github.com/user-attachments/assets/9f256d19-a1dc-4ace-b19e-4f44e32e16fb)
 
---- 
+---
 
 ## 🚀 Instruções de Instalação e Deploy
 
