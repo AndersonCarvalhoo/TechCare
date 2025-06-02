@@ -41,3 +41,18 @@ Esse endpoint pode ser utilizado por sistemas externos que queiram consultar ess
   "error": "Case request not found"
 }
 ```
+
+---
+
+## Testes via POSTMAN
+
+### Case Request Not Found
+![image](https://github.com/user-attachments/assets/7ba9f3e6-2325-4f34-a7f1-d99e256daa01)
+
+### Success
+![image](https://github.com/user-attachments/assets/23b5459f-67ca-47fa-b20a-155f319f6390)
+
+### Invalid Or Missing Case Request ID
+![image](https://github.com/user-attachments/assets/7083f3cb-db1e-4325-94c2-02dc29504aed)
+
+
