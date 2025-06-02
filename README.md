@@ -1,7 +1,7 @@
 # TechCare Support in Salesforce
 ## Informações do Responsável
 - Nome: Anderson Carvalho
-- Perfil Escolhido: **Desenvolvedor** (Com conhecimentos em ADMIN)
+- Perfil Escolhido: **Desenvolvedor** / Admin
 
 ## TechCare Support Project
 TechCare support é uma solução para criação e administração de casos de suporte. A partir do app TechCare Support o usuário do suporte pode registrar casos, pegar casos da fila baseado na prioridade, verificar dashboards essenciais na Home do App, verificar SLA de forma rápida, visual e intuitiva dentre outras vantagens. O foco do TechCare Support é aumentar a produtividade e organização da equipe de suporte.
@@ -164,7 +164,9 @@ Atribui o valor do SLA_Deadline__c baseado no RecordType do objeto.
 
 Caso o registro seja do tipo Support Standard o flow define o SLA_Deadline__c como DateTime atual + 24h. Support Premium define o SLA_Deadline__c como DateTime atual + 8h.  
 
-Foram criadas 2 condições pois, apenas um if-else após a adição futura de outro RecordType no Case_Request__c o flow iria quebrar, pois, o else iria para qualquer RecordType. Portanto, foram criados três caminhos, Support Premium, Standard e Default Outcome (Vazio).  
+Foram criadas duas condições separadas porque, se fosse usado apenas um if-else, o flow poderia quebrar no futuro com a adição de novos RecordTypes no Case_Request__c. O else acabaria capturando qualquer RecordType, mesmo que não fosse o esperado. Por isso, foram definidos três caminhos específicos: um para Support Premium, outro para Standard e um Default Outcome para quando estiver vazio ou não reconhecido.
+
+![image](https://github.com/user-attachments/assets/ee45960f-b3f5-4046-bf25-8c493a2fcc12)
 
 
 #### 📥 Assignment Case to Queue (Auto Launched Flow)  
@@ -181,7 +183,7 @@ Ele armazena a queue com base no **RecordType** e através da List view da para 
 
 ---  
 
-#### Create Case Request (Record triggered Flow)
+#### 📥 Case Request Create (Record triggered Flow)
 
 Ao criar o Case request esse flow é acionado e chama o Assignment Case to Queue através de um subflow.
 
@@ -189,12 +191,14 @@ Esse flow foi criado para que o flow autolaunched funcione através de um botão
 
 ---
 
-#### Flow Send Email
+#### 📧 Case Send Email (Autolaunched Flow)
 Flow responsável por enviar email para membros de uma fila específica, informando que um novo caso foi atribuído a fila.
 
 Verifica se existe membro na fila e, caso tenha membro na fila ele pega os membros e envia o email.
 
 Este flow é chamado ao final do flow Assign to Queue.
+
+![image](https://github.com/user-attachments/assets/fbefdfab-9650-4f24-b82b-4df255abde80) ![image](https://github.com/user-attachments/assets/5b807a40-ea77-40f7-9a9e-69fbef733cca)
 
 ---
 
@@ -230,18 +234,41 @@ Para a execução desse validation rule foi criado um custom permission chamado 
 ### 🎨 Lightning Web Components ( LWC )
 
 ### 🧾 `caseRequestDetail`
-#### Funcionalidade
-- Exibe o campo `SLA_Deadline__c` com **contagem regressiva dinâmica**.
+Componente apresentando na Record Page do objeto Case Request. Este componente visa melhorar a produtividade e garantir que o usuário do suporte tenha mais facilidade ao tentar cumprir o SLA Deadline. De forma geral esse componente apresenta o SLA Deadline em uma contagem regressiva de dias, horas, minutos e segundos. Além disso, o componente também possuí alguns botões que permitem que os usuários possam fazer algumas ações como por exemplo reabrir o casmo, de forma prática e rápida.
+
+Apenas o **Support Premium** consegue ver este componente.
+
+#### 🧠 Principais Funcionalidades
+- ⏱️ Contador de SLA em tempo real (atualização via setInterval);
+- 🔘 Exibição condicional de botões de ação com base no status do caso;
+- ♻️ Atualização automática da tela e publicação de status via Lightning Message Service;
+- 📨 Reabertura de casos via chamada Apex;
+- 🟢 Visualização visual do SLA;
+- 📧 Envio de Toast messages em ações.
 - Botões de ação:
   - **Reabrir** o caso.
   - **Avançar para “In Progress”**.
   - **Fechar o caso** (abrindo o `caseCloseModal`).
 
-#### Comunicação
+De forma mais técnica, a contagem regressiva funciona da seguinte forma. O componente consulta as informações do registro da página com a anotação @wire, chamando um método apex que retorna os dados necessários para fazer os calculos e exibir corretamente o Deadline. No próprio wire é feito uma chamada a função startTimer, função essa que exibe o timer com um setInterval a cada um segundo decrementando o timer.
+
+Foi realizado desta maneira pensando na peformance, porque desta forma os registros são consultados no Banco de Dados apenas uma vez. Depois de consultado, toda a lógica para decrementar está na função setInterval do startTimer, sendo mantida exclusivamente no lado do cliente. Evitando chamadas desnecessárias ao servidor, resultando em uma experiência mais fluida e eficiente para o usuário.
+
+#### 📡 Comunicação
 - **Pai de:** `caseCloseModal`.
 - Atua como **publisher** no padrão **PubSub**, enviando mensagens para outros componentes quando o caso é fechado.
 
-#### Visual
+#### 🧑‍💻 Usabilidade do componente
+O Objetivo desse componente é trazer a melhor experiência possível para o usuário que está consumindo.
+
+Pensando na melhor usabilidade, foram considerados os seguintes pontos:
+- Contagem regressiva em tempo real com atualização a cada segundo via setInterval no JavaScript.
+- Ocultação de dias, horas ou minutos quando o valor for zero, para uma exibição mais limpa.
+- Timer visual com estilo claro e legível para facilitar a leitura rápida.
+- Botões para alterar o status diretamente, otimizando o fluxo e aumentando a produtividade.
+- Interface alinhada ao design system do Salesforce para manter consistência visual.
+
+#### 🧑‍💻 Visual
 ![image](https://github.com/user-attachments/assets/8c259d86-5bf1-4caa-a920-2a571f43738f)
 ![image](https://github.com/user-attachments/assets/ca1d8f6e-e2f2-4ddc-865c-c1add01533c6)
 ![image](https://github.com/user-attachments/assets/9382efb2-6298-451c-833c-6a9a95e0f562)
@@ -250,31 +277,34 @@ Para a execução desse validation rule foi criado um custom permission chamado 
 ---
 
 ### 🪟 `caseCloseModal`
-Componente de modal customizado para encerramento de casos com regras de validação.
+Componente de modal customizado para encerramento de casos com regras de validação. De forma geral, esse componente é acionado pelo caseRequestDetail ao clicar em Marcar como Completed. Ao clicar nesse botão ele aparece para que seja obrigatório preencher o campo resolution notes antes de fechar o caso.
 
 #### Funcionalidade
 - Exibe um input obrigatório para inserção das *Resolution Notes*.
 - Possui validações antes de permitir o fechamento do caso.
 - Envia um evento ao componente pai ao concluir o fechamento do caso.
 
-#### Comunicação
+#### 📡 Comunicação
 - **Filho de:** `caseRequestDetail`.
 - **Recebe dados do pai** e **envia eventos de volta** com as informações do fechamento.
 
-#### Visual
+#### 🧑‍💻 Visual
 ![image](https://github.com/user-attachments/assets/3cc98bab-cc10-4813-8992-667d3cfd4166)
 
 ---
 ### 📄 `caseResolutionNotes`
-#### Funcionalidade
+Componente responsável por exibir dinamicamente as notas de resolução após o encerramento do caso. De forma geral, ele se comunica com o caseRequestDetail através de PubSub e exibe as informações recebidas por ele.
+
+Apenas o **Support Premium** consegue ver este componente.
+#### 🧠 Funcionalidade
 - Monitora eventos de fechamento de caso.
 - Atualiza dinamicamente seu conteúdo com as notas inseridas no `caseCloseModal`.
 
-#### Comunicação
+#### 📡 Comunicação
 - Atua como **subscriber** via **PubSub**.
 - **Recebe eventos do componente `caseRequestDetail`**, que publica os dados ao encerrar o caso.
 
-#### Visual
+#### 🧑‍💻 Visual
 ![image](https://github.com/user-attachments/assets/da0499fe-e794-4808-9b89-f0493e3a17c4)
 
 
@@ -323,6 +353,10 @@ Cria um registro de Case History vinculado ao Case Request.
 │
 └── 🧠 CaseRequestService             # Service que verifica se o `SLA_Deadline` foi cumprido e cria o objeto `Case_History__c` populando os campos de forma dinâmica
 ```
+
+Também foi utilizado essa arquitetura a fim de garantir mais Escalabilidade, Manutenibilidade, Reaproveitamento de código e boas práticas devido a separação de responsabilidades.
+
+Com essa arquitetura podemos garantir que a Trigger não possua lógica de negócio, garantindo que a a mesma irá tratar apenas as requisições dos gatilhos e mandar para o handler, como por exemplo o AFTER_UPDATE.
 
 --- 
 
