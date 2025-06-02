@@ -37,7 +37,6 @@ public class CaseRequestDetailTest {
         insert u;
 
         Group queue = [SELECT Id FROM Group where type = 'Queue' and Name = 'Support Premium Queue' limit 1];
-        System.debug(queue);
 
         GroupMember gm = new GroupMember(
             GroupId = queue.Id,
@@ -64,7 +63,7 @@ public class CaseRequestDetailTest {
             cr = [SELECT Status__c FROM Case_Request__c WHERE Id = :cr.Id];
             
             System.assertEquals('In Progress', cr.Status__c);
-            System.assertEquals('Case Request reaberto com sucesso!', res.get('message'));
+            System.assertEquals('Caso reaberto com sucesso!', res.get('message'));
         }
     }
 
@@ -79,7 +78,18 @@ public class CaseRequestDetailTest {
             cr = [SELECT Status__c FROM Case_Request__c WHERE Id = :cr.Id];
 
             System.assertEquals('Closed', cr.Status__c);
-            System.assertEquals('Você não tem permissão suficiente parar reabrir Cases.', res.get('error'));
+            System.assertEquals('Você não tem permissão suficiente parar reabrir Casos.', res.get('error'));
         }
+    }
+    @isTest
+    static void testReopenCaseRequest_CaseNotFound() {
+        Id fakeId = Id.valueOf('a01000000000000AAA');
+
+        Test.startTest();
+        Map<String, Object> result = CaseRequestDetailController.reopenCaseRequest(fakeId);
+        Test.stopTest();
+
+        System.assertEquals(true, result.containsKey('error'), 'Deveria conter a chave "error"');
+        System.assertEquals('Caso não encontrado', result.get('error'), 'Mensagem de erro incorreta');
     }
 }

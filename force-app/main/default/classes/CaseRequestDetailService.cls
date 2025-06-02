@@ -25,7 +25,7 @@ public with sharing class CaseRequestDetailService {
     }
 
     public static Map<String, Object> reopenCaseRequest(Id caseRequestId) {
-        Case_Request__c caseRequest = [
+        List<Case_Request__c> caseRequests = [
             SELECT Status__c 
             FROM Case_Request__c 
             WHERE Id = :caseRequestId 
@@ -33,8 +33,9 @@ public with sharing class CaseRequestDetailService {
         ];
         Boolean isSupportPremiumUser = SupportPremiumUser('Support_Premium');
 
-        if(caseRequest != null) {
-            if(isSupportPremiumUser) {
+        if(!caseRequests.isEmpty()) {
+            Case_Request__c caseRequest = caseRequests[0];
+                if(isSupportPremiumUser) {
                 caseRequest.Status__c = 'In Progress';
                 Database.update(caseRequest);
                 return new Map<String, Object>{
