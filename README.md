@@ -25,7 +25,7 @@ TechCare support é uma solução para criação e administração de casos de s
 │       ├── classes/            # Apex classes e testes
 │       ├── customPermissions/  # Custom Permissions Criadas
 │       ├── dashboards/         # Dashboards criados
-│       ├── flows/              # Apex classes e testes
+│       ├── flows/              # Flows criados
 │       ├── lwc/                # Componentes Lightning Web Components
 │       ├── messageChannels/    # Canais de mensagem (pubSub do LWC)
 │       ├── objects/            # Objetos customizados
@@ -82,7 +82,7 @@ Para registrar o histórico do registro foi criado um objeto Case History. O obj
 | Time Closed       | Time_Closed__c         | Date/Time                   | Não      | Momento em que o caso foi encerrado    |
 
 ### 🧾 RecordTypes do Case_Request__c
-Para diferenciar as regras de negócios de cada Permission Set, fez-se necessário criar dois RecordTypes, fazendo com que o objeto Case_Request__c tenha regras diferentes para cada tipo de objeto. 
+Para diferenciar as regras de negócios de cada Permission Set, fez-se necessário criar dois Record Types, fazendo com que o objeto Case_Request__c tenha regras diferentes para cada tipo de registro. 
 
 Com a criação do record type é possível fazer a regra de negócio através de Page layouts, Permission sets, Lightning pages e etc... Garantindo maior organização e consistência em toda regra de negócio. 
 - Support Premium (Support_Premium)
@@ -94,7 +94,8 @@ Com a criação do record type é possível fazer a regra de negócio através d
 Para facilitar a produtividade e organização dos casos da solução, foram criadas duas filas, uma para dada permission set.
 - Support Premium Queue
 - Support Standard Queue
-Foram adicionados usuários a fila nanualmente para que possam visualizar registros atribuídos a ela.
+
+Foram adicionados usuários as filas, para que possam visualizar registros atribuídos a ela.
 
 ---  
 
@@ -122,8 +123,8 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - **Campos:**
   - **Prioridade:** High, Medium, Low, (sem valor)
   - **Status:** New, In Progress, Escalated, Closed
-- **Totalização:** Soma por status e prioridade
-- **Objetivo:** Visualizar rapidamente a quantidade de casos abertos por por prioridade e status.
+- **Totalização:** Agrupa por prioridade e status
+- **Objetivo:** Visualizar rapidamente a quantidade de casos abertos por prioridade e status.
 
 
 #### 2. Dashboard: Análise de Casos
@@ -132,14 +133,14 @@ O App é visível apenas para usuários com o perfil Support criado para este fi
 - **Tipo:** Donut Chart
 - **Métrica:** Contagem de casos
 - **Segmentação:**
-  - **Opened:** Casos com `Status__c` = *New*, *In Progress*, *Escalated*
+  - **Opened (Bucket):** Casos com `Status__c` = *New*, *In Progress*, *Escalated*
   - **Closed:** Casos com `Status__c` = *Closed*
 - **Filtro:** Casos criados nos últimos 7 dias
 - **Objetivo:** Comparar visualmente a proporção de casos ainda em aberto versus casos encerrados recentemente.
 
 #### 2. Average Resolution Time by Type
 - **Tipo:** Gráfico de barras verticais
-- **Métrica:** Tempo médio de resolução (em dias)
+- **Métrica:** Tempo médio de resolução
 - **Fonte:** Campo `Time_Closed__c` do objeto **Case_History__c**
 - **Cálculo:** Média do tempo de resolução, agrupada por **Record Type** do objeto **Case_Request__c**
 - **Objetivo:** Avaliar a eficiência de resolução conforme o tipo de suporte.
@@ -161,11 +162,10 @@ Page Layouts e Lightning Record Pages foram criadas para o registro Case_Request
 #### ⏰ Set SLA Deadline By RecordType (Record Triggered Flow)  
 Atribui o valor do SLA_Deadline__c baseado no RecordType do objeto.   
 
-Caso o registro seja do tipo Support Premium o flow define o SLA_Deadline__c como DateTime atual + 24h. Support Standard define o SLA_Deadline__c como DateTime atual + 8h.  
+Caso o registro seja do tipo Support Standard o flow define o SLA_Deadline__c como DateTime atual + 24h. Support Premium define o SLA_Deadline__c como DateTime atual + 8h.  
 
 Foram criadas 2 condições pois, apenas um if-else após a adição futura de outro RecordType no Case_Request__c o flow iria quebrar, pois, o else iria para qualquer RecordType. Portanto, foram criados três caminhos, Support Premium, Standard e Default Outcome (Vazio).  
 
-![image](https://github.com/user-attachments/assets/5acc893a-75b5-4d91-b8dd-69e9db5451c7)  
 
 #### 📥 Assignment Case to Queue (Auto Launched Flow)  
 Com uma lógica semelhante ao flow Set SLA Deadline By RecordType, esse flow pega o recordId do Case_Request__c e define o Owner desse case a uma fila.  
@@ -192,7 +192,7 @@ Esse flow foi criado para que o flow autolaunched funcione através de um botão
 #### Flow Send Email
 Flow responsável por enviar email para membros de uma fila específica, informando que um novo caso foi atribuído a fila.
 
-Verifica se existe membro na fila, caso tenha membro na fila ele pega os membros e envia o email.
+Verifica se existe membro na fila e, caso tenha membro na fila ele pega os membros e envia o email.
 
 Este flow é chamado ao final do flow Assign to Queue.
 
@@ -399,7 +399,7 @@ Com base nisso, classes Apex foram devidamente testadas, garantindo robustez e q
 ### 🔁 1. Clone o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/AndersonCarvalhoo/TechCare
 cd seu-repositorio
 ```
 ### 🔐 2. Login na Org Salesforce
@@ -427,6 +427,7 @@ sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
 
 ## 🔍 Como Testar Manualmente a Aplicação
 
+### Cenário:
 1. **Abra o App TechCare Support**
    - No App Launcher, selecione **TechCare Support**.
    - Verifique se os **dashboards** são exibidos corretamente na Home.
@@ -440,8 +441,8 @@ sfdx force:apex:test:run --resultformat human --outputdir test-results --wait 10
 3. **Verificar cálculo do SLA Deadline**
    - Após salvar, abra o Case Request.
    - Verifique o campo **SLA Deadline**:
-     - Deve ser preenchido automaticamente com +24h (Premium) ou +8h (Standard).
-     - No perfil Standard SLA Deadline não aparece 
+     - Deve ser preenchido automaticamente com +24h (Standard) ou +8h (Premium).
+     - No Permission set Standard SLA Deadline não aparece 
    - No LWC, o contador regressivo deve aparecer **somente para Premium**.
 
 4. **Testar botão de atribuição à fila**
