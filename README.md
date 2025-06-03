@@ -221,8 +221,9 @@ Essa regra de validação foi criada para permitir que apenas usuários com **Su
 
 ```bash
 AND(
-  ISCHANGED( Status__c ),
-  NOT(ISPICKVAL( Status__c , 'Closed')),
+  ISCHANGED(Status__c),
+  NOT(ISPICKVAL(Status__c, 'Closed')),
+  ISPICKVAL(PRIORVALUE(Status__c), 'Closed'),
   NOT($Permission.canReopenCaseRequest)
 )
 ```
