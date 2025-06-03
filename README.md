@@ -81,7 +81,7 @@ Para registrar o histórico do registro foi criado um objeto Case History. O obj
 | SLA Met           | SLA_Met__c             | Checkbox                    | Não      | Indica se o SLA foi atendido ou não    |
 | Time Closed       | Time_Closed__c         | Date/Time                   | Não      | Momento em que o caso foi encerrado    |
 
-### 🧾 RecordTypes do Case_Request__c
+### 🧾 Record Types do Case_Request__c
 Para diferenciar as regras de negócios de cada Permission Set, fez-se necessário criar dois Record Types, fazendo com que o objeto Case_Request__c tenha regras diferentes para cada tipo de registro. 
 
 Com a criação do record type é possível fazer a regra de negócio através de Page layouts, Permission sets, Lightning pages e etc... Garantindo maior organização e consistência em toda regra de negócio. 
